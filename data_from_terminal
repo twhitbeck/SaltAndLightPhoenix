@@ -1,0 +1,424 @@
+
+18:43:51.540 request_id=Ft_BCKamrettlCsAAApC [info] GET /
+18:43:51.543 request_id=Ft_BCKamrettlCsAAApC [debug] Processing with AuctionWeb.PageController.index/2
+  Parameters: %{}
+  Pipelines: [:browser]
+18:43:51.577 request_id=Ft_BCKamrettlCsAAApC [debug] QUERY OK source="users" db=5.6ms decode=0.9ms queue=1.1ms idle=1114.7ms
+SELECT u0."id", u0."username", u0."email_address", u0."hashed_password", u0."inserted_at", u0."updated_at" FROM "users" AS u0 WHERE (u0."id" = $1) [1]
+18:43:51.585 request_id=Ft_BCKamrettlCsAAApC [debug] QUERY OK source="items" db=0.7ms queue=0.9ms idle=1130.6ms
+SELECT i0."id", i0."title", i0."description", i0."ends_at", i0."inserted_at", i0."updated_at" FROM "items" AS i0 []
+18:43:51.602 request_id=Ft_BCKamrettlCsAAApC [info] Sent 200 in 61ms
+18:43:53.922 request_id=Ft_BCTSWDGps8wkAAAqC [info] POST /profile/create
+18:43:53.923 request_id=Ft_BCTSWDGps8wkAAAqC [debug] Processing with AuctionWeb.ProfileController.create/2
+  Parameters: %{"_csrf_token" => "JFElMhVzJC9SLgcpHQl7MyosFgU3L3g4A7IkM9gZaKelNZLvkF_6Sj9n", "_method" => "create"}
+  Pipelines: [:browser]
+18:43:53.926 request_id=Ft_BCTSWDGps8wkAAAqC [debug] QUERY OK source="users" db=0.9ms idle=1472.3ms
+SELECT u0."id", u0."username", u0."email_address", u0."hashed_password", u0."inserted_at", u0."updated_at" FROM "users" AS u0 WHERE (u0."id" = $1) [1]
+18:43:53.942 request_id=Ft_BCTSWDGps8wkAAAqC [info] Sent 200 in 20ms
+Insice create profile
+%Plug.Conn{
+  adapter: {Plug.Cowboy.Conn, :...},
+  assigns: %{
+    current_user: %Auction.User{
+      __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+      bids: #Ecto.Association.NotLoaded<association :bids is not loaded>,
+      email_address: "whitsoftware@gmail.com",
+      hashed_password: "$pbkdf2-sha512$160000$/2acP/wHjXMtKt2Db1UwyA$SBLeZ4ufmPMwWJU6sHoGswRZKU7y7bKDdoUgAlbqihYQN7kY/4nR3NM/CnRLLwmfEsTVT.dU0hIqlVqJUidu0g",
+      id: 1,
+      inserted_at: ~N[2022-03-13 18:36:51],
+      password: nil,
+      profiles: #Ecto.Association.NotLoaded<association :profiles is not loaded>,
+      updated_at: ~N[2022-03-13 18:36:51],
+      username: "donwhit"
+    }
+  },
+  body_params: %{
+    "_csrf_token" => "JFElMhVzJC9SLgcpHQl7MyosFgU3L3g4A7IkM9gZaKelNZLvkF_6Sj9n",
+    "_method" => "create"
+  },
+  cookies: %{
+    "_auction_web_key" => "SFMyNTY.g3QAAAACbQAAAAtfY3NyZl90b2tlbm0AAAAYZWZsWVhKQ3UzZWJFU1M3RUFqSTNkRUFWbQAAAAd1c2VyX2lkYQE.nYKwBalc07nQMdCusrF_BgwBwp8YUPBL_Uk66riDRa0"
+  },
+  halted: false,
+  host: "localhost",
+  method: "POST",
+  owner: #PID<0.679.0>,
+  params: %{
+    "_csrf_token" => "JFElMhVzJC9SLgcpHQl7MyosFgU3L3g4A7IkM9gZaKelNZLvkF_6Sj9n",
+    "_method" => "create"
+  },
+  path_info: ["profile", "create"],
+  path_params: %{},
+  port: 4000,
+  private: %{
+    AuctionWeb.Router => {[], %{Plug.Swoosh.MailboxPreview => ["mailbox"]}},
+    :before_send => [#Function<0.16477574/1 in Plug.CSRFProtection.call/2>,
+     #Function<2.17183421/1 in Phoenix.Controller.fetch_flash/2>,
+     #Function<0.77458138/1 in Plug.Session.before_send/2>,
+     #Function<0.23023616/1 in Plug.Telemetry.call/2>,
+     #Function<1.46227650/1 in Phoenix.LiveReloader.before_send_inject_reloader/3>],
+    :phoenix_action => :create,
+    :phoenix_controller => AuctionWeb.ProfileController,
+    :phoenix_endpoint => AuctionWeb.Endpoint,
+    :phoenix_flash => %{},
+    :phoenix_format => "html",
+    :phoenix_layout => {AuctionWeb.LayoutView, :app},
+    :phoenix_request_logger => {"request_logger", "request_logger"},
+    :phoenix_root_layout => {AuctionWeb.LayoutView, :root},
+    :phoenix_router => AuctionWeb.Router,
+    :phoenix_view => AuctionWeb.ProfileView,
+    :plug_session => %{
+      "_csrf_token" => "eflYXJCu3ebESS7EAjI3dEAV",
+      "user_id" => 1
+    },
+    :plug_session_fetch => :done 
+  },
+  query_params: %{},
+  query_string: "",
+  remote_ip: {127, 0, 0, 1},
+  req_cookies: %{
+    "_auction_web_key" => "SFMyNTY.g3QAAAACbQAAAAtfY3NyZl90b2tlbm0AAAAYZWZsWVhKQ3UzZWJFU1M3RUFqSTNkRUFWbQAAAAd1c2VyX2lkYQE.nYKwBalc07nQMdCusrF_BgwBwp8YUPBL_Uk66riDRa0"
+  },
+  req_headers: [
+    {"accept",
+     "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"},
+    {"accept-encoding", "gzip, deflate, br"},
+    {"accept-language", "en-US,en;q=0.9"},
+    {"cache-control", "max-age=0"},
+    {"connection", "keep-alive"},
+    {"content-length", "83"},
+    {"content-type", "application/x-www-form-urlencoded"},
+    {"cookie",
+     "_auction_web_key=SFMyNTY.g3QAAAACbQAAAAtfY3NyZl90b2tlbm0AAAAYZWZsWVhKQ3UzZWJFU1M3RUFqSTNkRUFWbQAAAAd1c2VyX2lkYQE.nYKwBalc07nQMdCusrF_BgwBwp8YUPBL_Uk66riDRa0"},
+    {"host", "localhost:4000"},
+    {"origin", "http://localhost:4000"},
+    {"referer", "http://localhost:4000/"},
+    {"sec-ch-ua",
+     "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\""},
+    {"sec-ch-ua-mobile", "?0"},
+    {"sec-ch-ua-platform", "\"Linux\""},
+    {"sec-fetch-dest", "document"},
+    {"sec-fetch-mode", "navigate"},
+    {"sec-fetch-site", "same-origin"},
+    {"sec-fetch-user", "?1"},
+    {"upgrade-insecure-requests", "1"},
+    {"user-agent",
+     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"}
+  ],
+  request_path: "/profile/create",
+  resp_body: nil,
+  resp_cookies: %{},
+  resp_headers: [
+    {"cache-control", "max-age=0, private, must-revalidate"},
+    {"x-request-id", "Ft_BCTSWDGps8wkAAAqC"},
+    {"x-frame-options", "SAMEORIGIN"},
+    {"x-xss-protection", "1; mode=block"},
+    {"x-content-type-options", "nosniff"},
+    {"x-download-options", "noopen"},
+    {"x-permitted-cross-domain-policies", "none"},
+    {"cross-origin-window-policy", "deny"}
+  ],
+  scheme: :http,
+  script_name: [],
+  secret_key_base: :...,
+  state: :unset,
+  status: nil
+}
+Profile Params
+nil
+18:43:53.958 request_id=Ft_BCTSWDGps8wkAAAqC [debug] ** (Ecto.CastError) expected params to be a :map, got: `nil`
+    (ecto 3.7.2) lib/ecto/changeset.ex:521: Ecto.Changeset.cast/6
+    (auction 0.1.0) lib/auction/profile.ex:26: Auction.Profile.changeset/2
+    (auction 0.1.0) lib/auction.ex:106: Auction.insert_profile/1
+    (auction_web 0.1.0) lib/auction_web/controllers/profile_controller.ex:28: AuctionWeb.ProfileController.create/2
+    (auction_web 0.1.0) lib/auction_web/controllers/profile_controller.ex:1: AuctionWeb.ProfileController.action/2
+    (auction_web 0.1.0) lib/auction_web/controllers/profile_controller.ex:1: AuctionWeb.ProfileController.phoenix_controller_pipeline/2
+    (phoenix 1.6.6) lib/phoenix/router.ex:355: Phoenix.Router.__call__/2
+    (auction_web 0.1.0) lib/auction_web/endpoint.ex:1: AuctionWeb.Endpoint.plug_builder_call/2
+
+18:44:37.651 request_id=Ft_BE2MSX3wpykMAAAqE [info] POST /profile/create
+18:44:37.652 request_id=Ft_BE2MSX3wpykMAAAqE [debug] Processing with AuctionWeb.ProfileController.create/2
+  Parameters: %{"_csrf_token" => "VgcuPR4NEkwAAiZxFWZ2HHIuE3AmcQQk3aBdFGQ93gD4F5AY3DZCB4Er", "profile" => %{"city" => "Cambridge Springs", "firstname" => "Donald", "lastname" => "Whitbeck", "phoneone" => "8143981415", "phonetwo" => "", "spousename" => "Eva", "state" => "PA", "title" => "Mr", "zipcode" => "16403"}}
+  Pipelines: [:browser]
+18:44:37.655 request_id=Ft_BE2MSX3wpykMAAAqE [debug] QUERY OK source="users" db=1.0ms idle=1200.7ms
+SELECT u0."id", u0."username", u0."email_address", u0."hashed_password", u0."inserted_at", u0."updated_at" FROM "users" AS u0 WHERE (u0."id" = $1) [1]
+18:44:37.657 request_id=Ft_BE2MSX3wpykMAAAqE [info] Sent 200 in 6ms
+Insice create profile
+%Plug.Conn{
+  adapter: {Plug.Cowboy.Conn, :...},
+  assigns: %{
+    current_user: %Auction.User{
+      __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+      bids: #Ecto.Association.NotLoaded<association :bids is not loaded>,
+      email_address: "whitsoftware@gmail.com",
+      hashed_password: "$pbkdf2-sha512$160000$/2acP/wHjXMtKt2Db1UwyA$SBLeZ4ufmPMwWJU6sHoGswRZKU7y7bKDdoUgAlbqihYQN7kY/4nR3NM/CnRLLwmfEsTVT.dU0hIqlVqJUidu0g",
+      id: 1,
+      inserted_at: ~N[2022-03-13 18:36:51],
+      password: nil,
+      profiles: #Ecto.Association.NotLoaded<association :profiles is not loaded>,
+      updated_at: ~N[2022-03-13 18:36:51],
+      username: "donwhit"
+    }
+  },
+  body_params: %{
+    "_csrf_token" => "VgcuPR4NEkwAAiZxFWZ2HHIuE3AmcQQk3aBdFGQ93gD4F5AY3DZCB4Er",
+    "profile" => %{
+      "city" => "Cambridge Springs",
+      "firstname" => "Donald",
+      "lastname" => "Whitbeck",
+      "phoneone" => "8143981415",
+      "phonetwo" => "",
+      "spousename" => "Eva",
+      "state" => "PA",
+      "title" => "Mr",
+      "zipcode" => "16403"
+    }
+  },
+  cookies: %{
+    "_auction_web_key" => "SFMyNTY.g3QAAAACbQAAAAtfY3NyZl90b2tlbm0AAAAYZWZsWVhKQ3UzZWJFU1M3RUFqSTNkRUFWbQAAAAd1c2VyX2lkYQE.nYKwBalc07nQMdCusrF_BgwBwp8YUPBL_Uk66riDRa0"
+  },
+  halted: false,
+  host: "localhost",
+  method: "POST",
+  owner: #PID<0.693.0>,
+  params: %{
+    "_csrf_token" => "VgcuPR4NEkwAAiZxFWZ2HHIuE3AmcQQk3aBdFGQ93gD4F5AY3DZCB4Er",
+    "profile" => %{
+      "city" => "Cambridge Springs",
+      "firstname" => "Donald",
+      "lastname" => "Whitbeck",
+      "phoneone" => "8143981415",
+      "phonetwo" => "",
+      "spousename" => "Eva",
+      "state" => "PA",
+      "title" => "Mr",
+      "zipcode" => "16403"
+    }
+  },
+  path_info: ["profile", "create"],
+  path_params: %{},
+  port: 4000,
+  private: %{
+    AuctionWeb.Router => {[], %{Plug.Swoosh.MailboxPreview => ["mailbox"]}},
+    :before_send => [#Function<0.16477574/1 in Plug.CSRFProtection.call/2>,
+     #Function<2.17183421/1 in Phoenix.Controller.fetch_flash/2>,
+     #Function<0.77458138/1 in Plug.Session.before_send/2>,
+     #Function<0.23023616/1 in Plug.Telemetry.call/2>,
+     #Function<1.46227650/1 in Phoenix.LiveReloader.before_send_inject_reloader/3>],
+    :phoenix_action => :create,
+    :phoenix_controller => AuctionWeb.ProfileController,
+    :phoenix_endpoint => AuctionWeb.Endpoint,
+    :phoenix_flash => %{},
+    :phoenix_format => "html",
+    :phoenix_layout => {AuctionWeb.LayoutView, :app},
+    :phoenix_request_logger => {"request_logger", "request_logger"},
+    :phoenix_root_layout => {AuctionWeb.LayoutView, :root},
+    :phoenix_router => AuctionWeb.Router,
+    :phoenix_view => AuctionWeb.ProfileView,
+    :plug_session => %{
+      "_csrf_token" => "eflYXJCu3ebESS7EAjI3dEAV",
+      "user_id" => 1
+    },
+    :plug_session_fetch => :done
+  },
+  query_params: %{},
+  query_string: "",
+  remote_ip: {127, 0, 0, 1},
+  req_cookies: %{
+    "_auction_web_key" => "SFMyNTY.g3QAAAACbQAAAAtfY3NyZl90b2tlbm0AAAAYZWZsWVhKQ3UzZWJFU1M3RUFqSTNkRUFWbQAAAAd1c2VyX2lkYQE.nYKwBalc07nQMdCusrF_BgwBwp8YUPBL_Uk66riDRa0"
+  },
+  req_headers: [
+    {"accept",
+     "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"},
+    {"accept-encoding", "gzip, deflate, br"},
+    {"accept-language", "en-US,en;q=0.9"},
+    {"cache-control", "max-age=0"},
+    {"connection", "keep-alive"},
+    {"content-length", "320"},
+    {"content-type", "application/x-www-form-urlencoded"},
+    {"cookie",
+     "_auction_web_key=SFMyNTY.g3QAAAACbQAAAAtfY3NyZl90b2tlbm0AAAAYZWZsWVhKQ3UzZWJFU1M3RUFqSTNkRUFWbQAAAAd1c2VyX2lkYQE.nYKwBalc07nQMdCusrF_BgwBwp8YUPBL_Uk66riDRa0"},
+    {"host", "localhost:4000"},
+    {"origin", "http://localhost:4000"},
+    {"referer", "http://localhost:4000/profile/create"},
+    {"sec-ch-ua",
+     "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\""},
+    {"sec-ch-ua-mobile", "?0"},
+    {"sec-ch-ua-platform", "\"Linux\""},
+    {"sec-fetch-dest", "document"},
+    {"sec-fetch-mode", "navigate"},
+    {"sec-fetch-site", "same-origin"},
+    {"sec-fetch-user", "?1"},
+    {"upgrade-insecure-requests", "1"},
+    {"user-agent",
+     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"}
+  ],
+  request_path: "/profile/create",
+  resp_body: nil,
+  resp_cookies: %{},
+  resp_headers: [
+    {"cache-control", "max-age=0, private, must-revalidate"},
+    {"x-request-id", "Ft_BE2MSX3wpykMAAAqE"},
+    {"x-frame-options", "SAMEORIGIN"},
+    {"x-xss-protection", "1; mode=block"},
+    {"x-content-type-options", "nosniff"},
+    {"x-download-options", "noopen"},
+    {"x-permitted-cross-domain-policies", "none"},
+    {"cross-origin-window-policy", "deny"}
+  ],
+  scheme: :http,
+  script_name: [],
+  secret_key_base: :...,
+  state: :unset,
+  status: nil
+}
+Profile Params
+nil
+18:44:37.661 request_id=Ft_BE2MSX3wpykMAAAqE [debug] ** (Ecto.CastError) expected params to be a :map, got: `nil`
+    (ecto 3.7.2) lib/ecto/changeset.ex:521: Ecto.Changeset.cast/6
+    (auction 0.1.0) lib/auction/profile.ex:26: Auction.Profile.changeset/2
+    (auction 0.1.0) lib/auction.ex:106: Auction.insert_profile/1
+    (auction_web 0.1.0) lib/auction_web/controllers/profile_controller.ex:28: AuctionWeb.ProfileController.create/2
+    (auction_web 0.1.0) lib/auction_web/controllers/profile_controller.ex:1: AuctionWeb.ProfileController.action/2
+    (auction_web 0.1.0) lib/auction_web/controllers/profile_controller.ex:1: AuctionWeb.ProfileController.phoenix_controller_pipeline/2
+    (phoenix 1.6.6) lib/phoenix/router.ex:355: Phoenix.Router.__call__/2
+    (auction_web 0.1.0) lib/auction_web/endpoint.ex:1: AuctionWeb.Endpoint.plug_builder_call/2
+
+18:48:43.977 [debug] Live reload: lib/auction_web/templates/profile/edit.html.eex
+18:48:43.979 [debug] Live reload: lib/auction_web/templates/profile/edit.html.eex
+18:48:43.983 [debug] Live reload: lib/auction_web/templates/profile/edit.html.eex
+Compiling 3 files (.ex)
+warning: variable "profile" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  lib/auction_web/templates/profile/index.html.heex:2: AuctionWeb.ProfileView."index.html"/1
+
+warning: Plug.Swoosh.MailboxPreview.init/1 is undefined (module Plug.Swoosh.MailboxPreview is not available or is yet to be defined)
+  lib/auction_web/router.ex:70: AuctionWeb.Router.__checks__/0
+
+18:48:45.001 request_id=Ft_BTPpKkFUyXuoAAAmF [info] POST /profile/create
+18:48:45.002 request_id=Ft_BTPpKkFUyXuoAAAmF [debug] Processing with AuctionWeb.ProfileController.create/2
+  Parameters: %{"_csrf_token" => "JFElMhVzJC9SLgcpHQl7MyosFgU3L3g4A7IkM9gZaKelNZLvkF_6Sj9n", "_method" => "create"}
+  Pipelines: [:browser]
+18:48:45.004 request_id=Ft_BTPpKkFUyXuoAAAmF [debug] QUERY OK source="users" db=0.5ms idle=1551.3ms
+SELECT u0."id", u0."username", u0."email_address", u0."hashed_password", u0."inserted_at", u0."updated_at" FROM "users" AS u0 WHERE (u0."id" = $1) [1]
+18:48:45.007 request_id=Ft_BTPpKkFUyXuoAAAmF [info] Sent 200 in 5ms
+Insice create profile
+%Plug.Conn{
+  adapter: {Plug.Cowboy.Conn, :...},
+  assigns: %{
+    current_user: %Auction.User{
+      __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+      bids: #Ecto.Association.NotLoaded<association :bids is not loaded>,
+      email_address: "whitsoftware@gmail.com",
+      hashed_password: "$pbkdf2-sha512$160000$/2acP/wHjXMtKt2Db1UwyA$SBLeZ4ufmPMwWJU6sHoGswRZKU7y7bKDdoUgAlbqihYQN7kY/4nR3NM/CnRLLwmfEsTVT.dU0hIqlVqJUidu0g",
+      id: 1,
+      inserted_at: ~N[2022-03-13 18:36:51],
+      password: nil,
+      profiles: #Ecto.Association.NotLoaded<association :profiles is not loaded>,
+      updated_at: ~N[2022-03-13 18:36:51],
+      username: "donwhit"
+    }
+  },
+  body_params: %{
+    "_csrf_token" => "JFElMhVzJC9SLgcpHQl7MyosFgU3L3g4A7IkM9gZaKelNZLvkF_6Sj9n",
+    "_method" => "create"
+  },
+  cookies: %{
+    "_auction_web_key" => "SFMyNTY.g3QAAAACbQAAAAtfY3NyZl90b2tlbm0AAAAYZWZsWVhKQ3UzZWJFU1M3RUFqSTNkRUFWbQAAAAd1c2VyX2lkYQE.nYKwBalc07nQMdCusrF_BgwBwp8YUPBL_Uk66riDRa0"
+  },
+  halted: false,
+  host: "localhost",
+  method: "POST",
+  owner: #PID<0.716.0>,
+  params: %{
+    "_csrf_token" => "JFElMhVzJC9SLgcpHQl7MyosFgU3L3g4A7IkM9gZaKelNZLvkF_6Sj9n",
+    "_method" => "create"
+  },
+  path_info: ["profile", "create"],
+  path_params: %{},
+  port: 4000,
+  private: %{
+    AuctionWeb.Router => {[], %{Plug.Swoosh.MailboxPreview => ["mailbox"]}},
+    :before_send => [#Function<0.16477574/1 in Plug.CSRFProtection.call/2>,
+     #Function<2.17183421/1 in Phoenix.Controller.fetch_flash/2>,
+     #Function<0.77458138/1 in Plug.Session.before_send/2>,
+     #Function<0.23023616/1 in Plug.Telemetry.call/2>,
+     #Function<1.46227650/1 in Phoenix.LiveReloader.before_send_inject_reloader/3>],
+    :phoenix_action => :create,
+    :phoenix_controller => AuctionWeb.ProfileController,
+    :phoenix_endpoint => AuctionWeb.Endpoint,
+    :phoenix_flash => %{},
+    :phoenix_format => "html",
+    :phoenix_layout => {AuctionWeb.LayoutView, :app},
+    :phoenix_request_logger => {"request_logger", "request_logger"},
+    :phoenix_root_layout => {AuctionWeb.LayoutView, :root},
+    :phoenix_router => AuctionWeb.Router,
+    :phoenix_view => AuctionWeb.ProfileView,
+    :plug_session => %{
+      "_csrf_token" => "eflYXJCu3ebESS7EAjI3dEAV",
+      "user_id" => 1
+    },
+    :plug_session_fetch => :done 
+  },
+  query_params: %{},
+  query_string: "",
+  remote_ip: {127, 0, 0, 1},
+  req_cookies: %{
+    "_auction_web_key" => "SFMyNTY.g3QAAAACbQAAAAtfY3NyZl90b2tlbm0AAAAYZWZsWVhKQ3UzZWJFU1M3RUFqSTNkRUFWbQAAAAd1c2VyX2lkYQE.nYKwBalc07nQMdCusrF_BgwBwp8YUPBL_Uk66riDRa0"
+  },
+  req_headers: [
+    {"accept",
+     "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"},
+    {"accept-encoding", "gzip, deflate, br"},
+    {"accept-language", "en-US,en;q=0.9"},
+    {"cache-control", "max-age=0"},
+    {"connection", "keep-alive"},
+    {"content-length", "83"},
+    {"content-type", "application/x-www-form-urlencoded"},
+    {"cookie",
+     "_auction_web_key=SFMyNTY.g3QAAAACbQAAAAtfY3NyZl90b2tlbm0AAAAYZWZsWVhKQ3UzZWJFU1M3RUFqSTNkRUFWbQAAAAd1c2VyX2lkYQE.nYKwBalc07nQMdCusrF_BgwBwp8YUPBL_Uk66riDRa0"},
+    {"host", "localhost:4000"},
+    {"origin", "http://localhost:4000"},
+    {"referer", "http://localhost:4000/profile/create"},
+    {"sec-ch-ua",
+     "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"97\", \"Chromium\";v=\"97\""},
+    {"sec-ch-ua-mobile", "?0"},
+    {"sec-ch-ua-platform", "\"Linux\""},
+    {"sec-fetch-dest", "document"},
+    {"sec-fetch-mode", "navigate"},
+    {"sec-fetch-site", "same-origin"},
+    {"upgrade-insecure-requests", "1"},
+    {"user-agent",
+     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"}
+  ],
+  request_path: "/profile/create",
+  resp_body: nil,
+  resp_cookies: %{},
+  resp_headers: [
+    {"cache-control", "max-age=0, private, must-revalidate"},
+    {"x-request-id", "Ft_BTPpKkFUyXuoAAAmF"},
+    {"x-frame-options", "SAMEORIGIN"},
+    {"x-xss-protection", "1; mode=block"},
+    {"x-content-type-options", "nosniff"},
+    {"x-download-options", "noopen"},
+    {"x-permitted-cross-domain-policies", "none"},
+    {"cross-origin-window-policy", "deny"}
+  ],
+  scheme: :http,
+  script_name: [],
+  secret_key_base: :...,
+  state: :unset,
+  status: nil
+}
+Profile Params
+nil
+18:48:45.012 request_id=Ft_BTPpKkFUyXuoAAAmF [debug] ** (Ecto.CastError) expected params to be a :map, got: `nil`
+    (ecto 3.7.2) lib/ecto/changeset.ex:521: Ecto.Changeset.cast/6
+    (auction 0.1.0) lib/auction/profile.ex:26: Auction.Profile.changeset/2
+    (auction 0.1.0) lib/auction.ex:106: Auction.insert_profile/1
+    (auction_web 0.1.0) lib/auction_web/controllers/profile_controller.ex:28: AuctionWeb.ProfileController.create/2
+    (auction_web 0.1.0) lib/auction_web/controllers/profile_controller.ex:1: AuctionWeb.ProfileController.action/2
+    (auction_web 0.1.0) lib/auction_web/controllers/profile_controller.ex:1: AuctionWeb.ProfileController.phoenix_controller_pipeline/2
+    (phoenix 1.6.6) lib/phoenix/router.ex:355: Phoenix.Router.__call__/2
+    (auction_web 0.1.0) lib/auction_web/endpoint.ex:1: AuctionWeb.Endpoint.plug_builder_call/2
+
+

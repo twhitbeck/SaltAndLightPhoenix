@@ -1,0 +1,50 @@
+defmodule AuctionWeb.ItemController do
+  use AuctionWeb, :controller
+
+  def index(conn, _params) do
+    items = Auction.list_items()   # does items = create an attribute @items?
+    render(conn, "index.html", items: items)  # 3 render/3 Phoenix.Controller
+  end
+
+  #####################################################################
+  # bid - a new blank changeset - pass it to item.show thru item.view #
+  #####################################################################
+
+  def show(conn, %{"id" => id}) do  # for instants id might equal "1"
+    IO.puts("In item show")
+    item = Auction.get_item_with_bids(id)
+    bid = Auction.new_bid()   # get a new blank Bid changeset - pass it to item view
+    render(conn, "show.html", item: item, bid: bid)  # show up as @item, @bid in templates
+  end
+
+  def new(conn, _params) do  # conn - a plug containing request and response information.
+    IO.puts ("IN new item")
+    item = Auction.new_item()
+    render(conn, "new.html", item: item)
+  end
+
+  def create(conn, %{"item" => item_params}) do
+    IO.puts("create")
+    IO.inspect(item_params)
+    case Auction.insert_item(item_params) do
+      {:ok, item} -> redirect(conn, to: Routes.item_path(conn, :show, item))
+      {:error, item} -> render(conn, "new.html", item: item)
+    end
+  end
+
+  def edit(conn, %{"id" => id}) do
+    item = Auction.edit_item(id)
+    IO.inspect(item)
+    render(conn, "edit.html", item: item)
+  end
+
+  def update(conn, %{"id" => id, "item" => item_params}) do
+    item = Auction.get_item(id)
+    case Auction.update_item(item, item_params) do
+      {:ok, item} -> redirect(conn, to: Routes.item_path(conn, :show, item))
+      {:error, item} -> render(conn, "edit.html", item: item)
+    end
+  end
+
+
+end

@@ -1,0 +1,33 @@
+defmodule Auction.Item do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "items" do
+    field :title, :string
+    field :description, :string
+    field :ends_at, :utc_datetime
+    has_many :bids, Auction.Bid
+    timestamps()
+  end
+
+
+  # cast/4 allows provide keys (:title, :description, :ends_at) to pass thru
+  def changeset(item,data \\ %{}) do
+    #IO.puts("initem changeset")
+    item
+    |> cast(data, [:title, :description, :ends_at])
+    |> validate_required(:title) # requires title to be set
+    |> validate_length(:title, min: 3, max: 100)
+    |> validate_length(:description, max: 250)
+    |> validate_change(:ends_at, &validate/2)
+  end
+
+
+  defp validate(:ends_at, ends_at_date) do
+    case DateTime.compare(ends_at_date, DateTime.utc_now()) do
+      :lt -> [ends_at: "ends_at: cannot be in the past"]
+    _ -> []
+    end
+  end
+
+end

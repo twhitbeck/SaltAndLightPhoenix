@@ -1,0 +1,37 @@
+query = from(r in Registration, join: s in assoc(r, :student_id), preload: [student_id: s])
+ Auction.get_registration_student(49)
+alias Auction.{Repo, Registration, Class, Period, Section}
+
+
+reg = Auction.Registration
+|> where([registration], student_id == ^student_id)
+|> join(:left ,[r], _ in asscod(r, :classes))
+|> join(:left, [_, classes], in assoc(classes, :classtitles))
+|> preload([_, c. t],[classes: {c, classtitles: t])
+|> Auction.Repo.one
+
+reg = Auction.Repo.one from registration in Auction.Registration,
+
+iex(8)> reg = Auction.Repo.one from registration in Auction.Registration,
+...(8)> where: reg.student_id == ^student_id, 
+...(8)> left_join: classes in assoc(reg, :classes),
+...(8)> left_join: classtitles in assoc(classes, :classtitles),
+...(8)> preload: [classes: {classes, classtitles: classtitles}]
+** (CompileError) iex:8: undefined function from/2 (there is no such import)
+
+iex(9)> query = from r in "registrations",                         
+...(9)> where: r.student_id == 26,                                 
+...(9)> select: r.class_id    
+
+WORKS
+query = from(r in Auction.Registration, where: r.student_id == 74, select: r.class_id)
+Auction.Repo.all(query)        
+
+iex(3)> from class in Class,
+...(3)> join: class in assoc(class, :classtitles),
+...(3)> select: %{class: class.id, classtitle: classtitle.description}
+
+from album in Album,
+join: track in assoc(album, :tracks),
+join: genre in assoc(track, :genre),
+select: %(album: album.title, track: trackname, genre: genre.name}

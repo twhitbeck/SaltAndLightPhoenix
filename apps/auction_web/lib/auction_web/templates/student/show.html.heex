@@ -1,0 +1,30 @@
+<%# require IEx; IEx.pry() %>
+<h2>Student data for <%= @lastname %> </h2>
+<% IO.puts(" @student_ID appears to be a placeholder only") %> 
+<% IO.puts(" @registration_id appears to be a placeholder only") %>
+<% IO.inspect(@registration_id) %>
+<% IO.puts("DID @registration_id show up") %>
+ 
+<%=# form_for @student, Routes.student_path(@conn, :show ,@student.data), fn f -> %>
+ <style>
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+  <table>
+    <tr>
+      <th>&nbsp;&nbsp; First name </th>
+      <th>Grade</th>
+      <th>Birthday</th>
+    </tr>
+ 
+    <tr>
+      <td>&nbsp;&nbsp;<%=  @student.data.firstname %></td>
+      <td><%=  @student.data.grade%></td>
+      <td><%=  @student.data.birthday %></td>
+    </tr>
+  </table>
+ <%= IO.puts("SHOE STUDENT HTML") %>
+  <%= IO.puts(@student.data.firstname) %>
+
+<%# end %> 

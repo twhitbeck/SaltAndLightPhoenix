@@ -1,0 +1,19 @@
+defmodule Auction.Repo.Migrations.CreateClasses do
+  use Ecto.Migration
+
+  def change do
+    create table(:classes) do
+      add :description, :string
+      add :fallfee,     :integer
+      add :springfee,   :integer
+      add :location,    :string
+      add :period,      references(:periods)
+      add :section,     references(:sections)
+      add :teacher_id,  references(:users)
+      add :helper1_id,  references(:users)
+      add :helper2_id,  references(:users)
+
+      timestamps()
+    end
+   end
+end

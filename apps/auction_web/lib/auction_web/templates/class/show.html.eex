@@ -1,0 +1,18 @@
+<%# require IEx; IEx.pry() %>
+<h1>Class data</h1>
+<% # @student_ID appears to be a place holder only %> 
+ <% IO.puts("show class") %>
+<%= form_for @student, Routes.student_path(@conn, :show ,@student_id), fn f -> %>
+  <%= label f,      "First Name" %>
+  <%= error_tag f,  :firstname  %>
+  <%= text_input f, :firstname  %>
+  
+  <%= label f,      "Grade"  %>
+  <%= error_tag f,  :grade %>
+  <%= text_input f, :grade %>
+
+  <%= label f,      "Birthday" %>
+  <%= error_tag f,  :birthday %>
+  <%= text_input f, :birthday %>
+<% end %>  
+

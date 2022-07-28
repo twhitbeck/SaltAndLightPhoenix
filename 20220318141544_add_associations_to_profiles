@@ -1,0 +1,11 @@
+defmodule Auction.Repo.Migrations.AddAssociationsToProfiles do
+  use Ecto.Migration
+
+  def change do
+    alter table(:profiles) do
+      add :user_id, references(:users)
+    end
+    create unique_index(:profiles, [:user_id])
+  end
+
+end

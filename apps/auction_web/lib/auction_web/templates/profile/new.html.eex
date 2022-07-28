@@ -1,0 +1,7 @@
+<h1>New Profile</h1>
+<% IO.puts("RENDER NEW") %>
+<% IO.inspect(@profile) %>
+<% IO.inspect(@current_user) %>
+<%= render("form.html", profile: @profile, current_user: @current_user, action: Routes.profile_path(@conn,:create), conn: @conn) %>
+ <! –– assigns - [:conn, :current_user, :profile] ––> 
+ <! –– from Map.keys(assigns) ––> 

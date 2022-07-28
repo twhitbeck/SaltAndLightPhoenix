@@ -1,0 +1,496 @@
+commit 83f722b134be48dab837f943f00cfdb4d5673c25
+Author: your_username <your_email_address@example.com>
+Date:   Mon Mar 28 09:46:17 2022 -0400
+
+    28Mar22
+
+diff --git a/auction/lib/auction.ex b/auction/lib/auction.ex
+index 617e8a2..4d1881b 100644
+--- a/auction/lib/auction.ex
++++ b/auction/lib/auction.ex
+@@ -1,5 +1,5 @@
+ defmodule Auction do
+-  alias Auction.{Bid, Item, Repo, User, Password}
++  alias Auction.{Bid, Item, Repo, User, Password, Profile}
+  # import Ecto.Changeset # Eliminate specifying Ecto.Changeset.cast, etc
+   import Ecto.Query
+ 
+@@ -42,7 +42,7 @@ defmodule Auction do
+   # User functions  - for users on Phoenix side of umbrella      #
+   ################################################################
+ 
+-  def get_user(id), do: @repo.get!(User, id)
++  def get_user(id), do: @repo.get!(User, id)  # returns id for User
+ 
+   def new_user, do: User.changeset_with_password(%User{})
+ 
+@@ -65,13 +65,16 @@ defmodule Auction do
+   # Bid functions  - for bids on Phoenix side of umbrella        #
+   ################################################################
+ 
++  # Return a blank changeset to create a blank bid - BUT
++  # item controller passes it to item.view / item.show template
++
+   def new_bid, do: Bid.changeset(%Bid{})
+ 
+   def insert_bid(params) do
+     %Bid{}
+     |> Bid.changeset(params)
+     |> @repo.insert()
+-  end;
++  end
+ 
+ 
+   def get_item_with_bids(id) do
+@@ -90,4 +93,39 @@ defmodule Auction do
+     @repo.all(query)
+   end
+ 
++  #################################################################
++  # Profile functions  - for profiles on Phoenix side of umbrella #
++  #################################################################
++
++  def new_profile, do: Profile.changeset(%Profile{})   # Return a blank changeset
++
++  def insert_profile(params) do
++    IO.puts("Profile Params")
++    IO.inspect(params)
++    %Profile{}
++    |> Profile.changeset(params)
++    |> @repo.insert()
++  end;
++
++  def get_profile(id) do
++    @repo.get!(Profile, id)
++  end
++
++  def get_profile_by(attrs) do
++    @repo.get_by(Profile, attrs)
++  end
++
++  def update_profile(%Auction.Profile{} = profile, updates) do
++    profile
++      |> Profile.changeset(updates)
++      |> @repo.update()
++  end
++
++
++  def edit_profile(id) do
++    get_profile(id)
++    |> Profile.changeset()
++  end
++
++  def delete_profile(%Auction.Profile{} = profile), do: @repo.delete(profile)
+ end
+diff --git a/auction/lib/auction/bid.ex b/auction/lib/auction/bid.ex
+index baacd04..5b147ed 100644
+--- a/auction/lib/auction/bid.ex
++++ b/auction/lib/auction/bid.ex
+@@ -9,9 +9,9 @@ defmodule Auction.Bid do
+     timestamps()
+   end
+ 
+-  def changeset(bid, params \\ %{}) do
++  def changeset(bid, data \\ %{}) do
+     bid
+-    |> cast(params, [:amount, :user_id, :item_id])
++    |> cast(data, [:amount, :user_id, :item_id])
+     |> validate_required([:amount, :user_id, :item_id])
+     |> assoc_constraint(:item)
+     |> assoc_constraint(:user)
+diff --git a/auction/lib/auction/fakerepo.ex b/auction/lib/auction/fakerepo.ex
+deleted file mode 100644
+index 5109617..0000000
+--- a/auction/lib/auction/fakerepo.ex
++++ /dev/null
+@@ -1,41 +0,0 @@
+-defmodule Auction.FakeRepo do
+-  alias Auction.Item
+-
+-  @items [
+-    %Item{
+-      id: 1,
+-      title: "My first item",
+-      description: "A tasty item sure to please",
+-      ends_at: ~N[2020-01-01 00:00:00]
+-    },
+-
+-    %Item{
+-      id: 2,
+-      title: "WarGames Bluray",
+-      description: "The best computer movie of all time, now on Bluray!",
+-      ends_at: ~N[2018-10-15 13:39:35]
+-    },
+-
+-    %Item{
+-      id: 3,
+-      title: "U2 - Achtung Baby on CD",
+-      description: "The sound of 4 men chopping down The Joshua Tree",
+-      ends_at: ~N[2018-11-05 03:12:29]
+-    }
+-  ]
+-
+-  def all(Item), do: @items
+-
+-  def get!(Item, id) do
+-    Enum.find(@items, fn(item) -> item.id === id end)
+-  end
+-
+-  def get_by(Item, map) do
+-    Enum.find(@items, fn(item) ->
+-      Enum.all?(Map.keys(map), fn(key) ->
+-        Map.get(item, key) === map[key]
+-      end)
+-    end)
+-  end
+-
+-end
+diff --git a/auction/lib/auction/item.ex b/auction/lib/auction/item.ex
+index 4c67324..9ec6f4d 100644
+--- a/auction/lib/auction/item.ex
++++ b/auction/lib/auction/item.ex
+@@ -10,10 +10,11 @@ defmodule Auction.Item do
+     timestamps()
+   end
+ 
++
+   # cast/4 allows provide keys (:title, :description, :ends_at) to pass thru
+-  def changeset(item, params \\ %{}) do
++  def changeset(item,data \\ %{}) do
+     item
+-    |> cast(params, [:title, :description, :ends_at])
++    |> cast(data, [:title, :description, :ends_at])
+     |> validate_required(:title) # requires title to be set
+     |> validate_length(:title, min: 3, max: 100)
+     |> validate_length(:description, max: 250)
+diff --git a/auction/lib/auction/profile.ex b/auction/lib/auction/profile.ex
+new file mode 100644
+index 0000000..29cdb68
+--- /dev/null
++++ b/auction/lib/auction/profile.ex
+@@ -0,0 +1,32 @@
++defmodule Auction.Profile do
++  use Ecto.Schema
++  import Ecto.Changeset
++
++  schema "profiles" do
++    field  :title,         :string
++    field  :lastname,      :string
++    field  :firstname,     :string
++    field  :spousename,    :string
++    field  :streetaddress, :string
++    field  :city,          :string
++    field  :state,         :string
++    field  :zipcode,       :string
++    field  :phoneone,      :string
++    field  :phonetwo,      :string
++    field  :currentmember, :string
++
++    belongs_to :user,      Auction.User
++    timestamps()
++  end
++
++  @fields  [:title, :lastname, :firstname, :spousename, :streetaddress, :city, :state, :zipcode, :phoneone, :phonetwo, :user_id, :currentmember]
++
++  def changeset(profile, data \\ %{}) do
++    profile
++    |> cast(data, @fields)
++    |> validate_required([:lastname, :firstname, :user_id])
++    |> assoc_constraint(:user)  # Look for associated records in database - if they don't exist kill the query
++    #|> IO.inspect()
++  end
++
++end
+diff --git a/auction/lib/auction/user.ex b/auction/lib/auction/user.ex
+index 747699f..58b1f70 100644
+--- a/auction/lib/auction/user.ex
++++ b/auction/lib/auction/user.ex
+@@ -3,30 +3,33 @@ defmodule Auction.User do
+   import Ecto.Changeset
+ 
+   schema "users" do
+-    field :username, :string
+-    field :email_address, :string
+-    field :password, :string, virtual: true
+-    field :hashed_password, :string
++    field    :username, :string
++    field    :email_address, :string
++    field    :password, :string, virtual: true
++    field    :hashed_password, :string
+     has_many :bids, Auction.Bid
++    has_one  :profiles, Auction.Profile
+     timestamps()
+   end
+ 
+-  def changeset(user, params \\ %{}) do
++  def changeset(user, data \\ %{}) do
+     user
+-    |> cast(params, [:username, :email_address])
++    |> cast(data, [:username, :email_address])
+     |> validate_required([:username, :email_address, :hashed_password])
+     |> validate_length(:username, min: 3)
+     |> unique_constraint(:username)
+     end
+ 
+-  def changeset_with_password(user, params \\ %{}) do
++  def changeset_with_password(user, data \\ %{}) do
++    IO.puts("Sfdlkjwerlkjsdflksjfdlkjwlekrj")
++    IO.inspect(user)
+     user
+-    |> cast(params, [:password])
++    |> cast(data, [:password])
+     |> validate_required(:password)
+     |> validate_length(:password, min: 5)
+     |> validate_confirmation(:password, required: true)
+     |> hash_password()
+-    |> changeset(params)
++    |> changeset(data)
+   end
+ 
+   defp hash_password(%Ecto.Changeset{changes: %{password: password}} = changeset) do
+diff --git a/auction/priv/repo/migrations/20220317135047_create_profiles.exs b/auction/priv/repo/migrations/20220317135047_create_profiles.exs
+new file mode 100644
+index 0000000..d7aa21b
+--- /dev/null
++++ b/auction/priv/repo/migrations/20220317135047_create_profiles.exs
+@@ -0,0 +1,22 @@
++defmodule Auction.Repo.Migrations.CreateProfiles do
++  use Ecto.Migration
++
++  def change do
++    create table(:profiles) do
++      add :ptitle,         :string
++      add :lastname,      :string
++      add :firstname,     :string
++      add :spousename,    :string
++      add :streetaddress, :string
++      add :city,          :string
++      add :state,         :string
++      add :zipcode,       :string
++      add :phoneone,      :string
++      add :phonetwo,      :string
++      add :currentmember, :string
++      add :user_id, references(:users)
++      timestamps()
++    end
++    create index(:profiles, [:user_id])
++  end
++end
+diff --git a/auction/priv/repo/migrations/20220318141544_add_associations_to_profiles b/auction/priv/repo/migrations/20220318141544_add_associations_to_profiles
+new file mode 100644
+index 0000000..471ad1f
+--- /dev/null
++++ b/auction/priv/repo/migrations/20220318141544_add_associations_to_profiles
+@@ -0,0 +1,11 @@
++defmodule Auction.Repo.Migrations.AddAssociationsToProfiles do
++  use Ecto.Migration
++
++  def change do
++    alter table(:profiles) do
++      add :user_id, references(:users)
++    end
++
++  end
++
++end
+diff --git a/auction_web/lib/auction_web/controllers/item_controller.ex b/auction_web/lib/auction_web/controllers/item_controller.ex
+index 4485072..78739f6 100644
+--- a/auction_web/lib/auction_web/controllers/item_controller.ex
++++ b/auction_web/lib/auction_web/controllers/item_controller.ex
+@@ -10,10 +10,10 @@ defmodule AuctionWeb.ItemController do
+   # bid - a new blank changeset - pass it to item.show thru item.view #
+   #####################################################################
+ 
+-  def show(conn, %{"id" => id}) do
++  def show(conn, %{"id" => id}) do  # for instants id might equal "1"
+     item = Auction.get_item_with_bids(id)
+     bid = Auction.new_bid()   # get a new blank Bid changeset - pass it to item view
+-    render(conn, "show.html", item: item, bid: bid)
++    render(conn, "show.html", item: item, bid: bid)  # show up as @item, @bid in templates
+   end
+ 
+   def new(conn, _params) do  # conn - a plug containing request and response information.
+@@ -22,6 +22,8 @@ defmodule AuctionWeb.ItemController do
+   end
+ 
+   def create(conn, %{"item" => item_params}) do
++    IO.puts("create")
++    IO.inspect(item_params)
+     case Auction.insert_item(item_params) do
+       {:ok, item} -> redirect(conn, to: Routes.item_path(conn, :show, item))
+       {:error, item} -> render(conn, "new.html", item: item)
+diff --git a/auction_web/lib/auction_web/controllers/profile_controller.ex b/auction_web/lib/auction_web/controllers/profile_controller.ex
+index 14cacf1..019190e 100644
+--- a/auction_web/lib/auction_web/controllers/profile_controller.ex
++++ b/auction_web/lib/auction_web/controllers/profile_controller.ex
+@@ -15,42 +15,47 @@ defmodule AuctionWeb.ProfileController do
+     render(conn, "index.html", profile: profile, conn: conn)
+   end
+ 
++
++def create(conn, %{"profile" => profile_params}) do
++  IO.puts("create profile $$$$")
++  IO.inspect(profile_params)
++  case Auction.insert_profile(profile_params) do
++    {:ok, profile} -> redirect(conn, to: Routes.profile_path(conn, :show, profile))
++    {:error, profile} -> render(conn, "new.html", profile: profile)
++  end
++end
++
++
+   def new(conn, _params) do  # conn - a plug containing request and response information.
+     profile = Auction.new_profile()
+-    render(conn, "new.html", profile: profile, conn: conn)
++    render(conn, "new.html", profile: profile)#, conn: conn)
+   end
+ 
+-  def create(conn, _params) do
+-    user_id = conn.assigns.current_user.id
+-    new(conn, nil)
+-    IO.puts("Insice create profile")
+-    IO.inspect(conn)
+-    case Auction.insert_profile(@profile_map) do
+-      {:ok, profile} -> redirect(conn, to: Routes.user_profile_path(conn, :show, user_id))
+-    {:error, profile} ->
+-      profile = Auction.get_profile(user_id)
+-      render(conn, AuctionWeb.ProfileView, "show.html" )
+-    end #case
+-  end #create
+-  #def create(%{"user" => params}) do
+-  #  IO.inspect(params)
+-  #def create(conn, %{"profile" => profile_params}) do
+-  #  case Auction.insert_profile(profile_params) do
+-  #    {:ok, profile} -> redirect conn, to: Routes.profile_path(conn, :show, profile)
+-  #    {:error, profile} -> render(conn, "new.html", profile: profile)
+-  #  end
+-  #end
++#  def create(conn, _params) do
++#    user_id = conn.assigns.current_user.id
++##    new(conn, nil)
++#    IO.puts("Insice create profile")
++#    IO.inspect(conn)
++#    case Auction.insert_profile(@profile_map) do
++#      {:ok, profile} -> redirect(conn, to: Routes.profile_path(conn, :show, user_id))
++#    {:error, profile} ->
++#      profile = Auction.get_profile(user_id)
++#      render(conn, AuctionWeb.ProfileView, "show.html" )
++#    end #case
++#  end #create
++
+ 
+   def show(conn, %{"id" => id}) do
+-    user = Auction.get_user(id)
++    IO.inspect(id)
+     profile = Auction.get_profile(id)
+     render(conn, "show.html", profile: profile, conn: conn)
+   end
+ 
+ 
+   def edit(conn, %{"id" => id}) do
++    #user = Auction.get_user(id)
+     profile = Auction.edit_profile(id)
+-    render(conn, "edit.profile", profile: profile)
++    render(conn, "edit.html", profile: profile, conn: conn)
+   end
+ 
+   def update(conn, %{"id" => id, "profile" => profile_params}) do
+diff --git a/auction_web/lib/auction_web/router.ex b/auction_web/lib/auction_web/router.ex
+index 0a1b415..a3e948e 100644
+--- a/auction_web/lib/auction_web/router.ex
++++ b/auction_web/lib/auction_web/router.ex
+@@ -20,19 +20,21 @@ defmodule AuctionWeb.Router do
+   scope "/", AuctionWeb do
+     pipe_through :browser
+     get "/", PageController, :index
+-    # create the 8 RESTful routes
++
++    # create the 8 RESTful routes - resources is a macro
++
+     resources "/items",    ItemController,      only: @options do
+-      resources "/bids",   BidController,       only: [:create]
++      resources "/bids",   BidController,       only: [:create]  #nested resource
+     end
+     resources "/users",      UserController,    only: [:show, :new, :create] do
+      # resources "/profiles", ProfileController, only: [:index, :new, :create, :update, :show]
+    end
+ 
+     # custom names
+-    get    "/profile",        ProfileController, :new
+-    post   "/profile",        ProfileController, :create
++    get    "/profile/new",    ProfileController, :new
++    get   "/profile/create",  ProfileController, :create
+     get    "/profile/edit",   ProfileController, :edit
+-    #put    "/profile/update", ProfileController, :update
++    #get    "/profile",        ProfileController, :index
+     patch  "/profile/update", ProfileController, :update
+     delete "/profile/delete", ProfileController, :delete
+     get    "/login",          SessionController, :new
+diff --git a/auction_web/lib/auction_web/templates/profile/edit.html.eex b/auction_web/lib/auction_web/templates/profile/edit.html.eex
+index 4799d93..2ed3f85 100644
+--- a/auction_web/lib/auction_web/templates/profile/edit.html.eex
++++ b/auction_web/lib/auction_web/templates/profile/edit.html.eex
+@@ -1,3 +1,5 @@
++
+ <h1>Edit <%= @form.data.title %></h1>
+ 
+-<%= render("form.html", profile: @form, action: Routes.item_path(@conn, :update, @form.data)) %>
+\ No newline at end of file
++<%= render("form.html", profile: @form, action: Routes.profile_path(@conn, :update, @form.data)) %>
++ <! –– from Map.keys(assigns) ––> 
+\ No newline at end of file
+diff --git a/auction_web/lib/auction_web/templates/profile/form.html.eex b/auction_web/lib/auction_web/templates/profile/form.html.eex
+index cc32b4c..0b54d4d 100644
+--- a/auction_web/lib/auction_web/templates/profile/form.html.eex
++++ b/auction_web/lib/auction_web/templates/profile/form.html.eex
+@@ -1,5 +1,3 @@
+-<h1>Show Profile</h1>
+-
+ <%= form_for @profile, Routes.profile_path(@conn, :create), fn f -> %>
+   <%= if @profile.action do %>
+     <div class="alert alert-danger">
+diff --git a/auction_web/lib/auction_web/templates/profile/index.html.heex b/auction_web/lib/auction_web/templates/profile/index.html.heex
+index cdadc55..065b4df 100644
+--- a/auction_web/lib/auction_web/templates/profile/index.html.heex
++++ b/auction_web/lib/auction_web/templates/profile/index.html.heex
+@@ -1,7 +1,7 @@
+ <ul>
+   <%= for profile <- @profiles do %>
+     <li>
+-      <strong>Hello profiles</strong>
++      <strong>@profiles</strong>
+     </li>
+   <% end %>
+ </ul>
+diff --git a/auction_web/lib/auction_web/templates/profile/new.html.eex b/auction_web/lib/auction_web/templates/profile/new.html.eex
+index 8e0113f..c56b02b 100644
+--- a/auction_web/lib/auction_web/templates/profile/new.html.eex
++++ b/auction_web/lib/auction_web/templates/profile/new.html.eex
+@@ -1,2 +1,4 @@
+ <h1>New Profile</h1>
+ <%= render("form.html", profile: @profile, action: Routes.profile_path(@conn,:create), conn: @conn) %>
++ <! –– assigns - [:conn, :current_user, :profile] ––> 
++ <! –– from Map.keys(assigns) ––> 
+diff --git a/auction_web/lib/auction_web/templates/profile/show.html.eex b/auction_web/lib/auction_web/templates/profile/show.html.eex
+index 597e333..780a15a 100644
+--- a/auction_web/lib/auction_web/templates/profile/show.html.eex
++++ b/auction_web/lib/auction_web/templates/profile/show.html.eex
+@@ -1,12 +1,17 @@
+-<% require IEx; IEx.pry() %>
++
+ <h1><%= @title %></h1>
+ 
++<h1>show profilertd</h1>
++
++ <! –– assigns - [:conn, :current_user, :profile] ––> 
++ <! –– from Map.keys(assigns) ––> 
++
+ <ul> 
+  <li><strong>firstname:</strong> <%= @profile.firstname %></li>
+  <li><strong>lastname:</strong> <%= @profile.lastname %></li>
+ </ul>
+ 
+-<%= form_for @profile, Routes.user_profile_path(@conn, :show), fn f -> %>
++<%= form_for @profile, Routes.profile_path(@conn, :show), fn f -> %>
+   <%= if @profile.action do %>
+     <div class="alert alert-danger">
+       There are errors in your submission.
