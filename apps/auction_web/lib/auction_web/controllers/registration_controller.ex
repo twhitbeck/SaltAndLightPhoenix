@@ -56,12 +56,13 @@ defmodule AuctionWeb.RegistrationController do
     #  ["Gym", "1-2", "12:00 PM", "fee unknown", 1, "Vanessa Campbell",
     #   "Helen Lorah", "Elyse Stobart"]
     #]
-    IO.puts("REG CONTROLLER INDEX FUNXCTIO - GOING AWRY HERE")
+    IO.puts("Check INDESX")
     conn
+    |> assign(:student_name,  firstname)
       |> assign(:firstname,  firstname)
       |> assign(:lastname,   lastname)
       |> assign(:classes,    classes)
-      |> render("index.html" , layout: {AuctionWeb.LayoutView, "indexstudent.html"})
+      |> render("index.html") # , layout: {AuctionWeb.LayoutView, "indexstudent.html"})
     #render(conn, "index.html", %{students: students ,lastname: lastname})
      #layout: {AuctionWeb.LayoutView, "indexstudent.html"})
   end
