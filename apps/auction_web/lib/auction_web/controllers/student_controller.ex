@@ -24,7 +24,7 @@ defmodule AuctionWeb.StudentController do
       |> assign(:student_id, userid)
       |> assign(:students,   students)
       |> assign(:lastname,   lastname)
-      |> render("index.html" , layout: {AuctionWeb.LayoutView, "indexstudent.html"})
+      |> render("index.html", layout: {AuctionWeb.LayoutView, "indexstudent.html"})
     #render(conn, "index.html", %{students: students ,lastname: lastname})
      #layout: {AuctionWeb.LayoutView, "indexstudent.html"})
   end
