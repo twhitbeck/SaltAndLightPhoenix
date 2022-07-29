@@ -4,6 +4,8 @@
   <% classes_length = length(@classes) - 1 %>
   
 </ul>
+
+
  <style>
 table, th, td {
   width: 1200px;
@@ -38,6 +40,4 @@ table, th, td {
     </tr> 
 <% end %>
   </table>
-
-
 
