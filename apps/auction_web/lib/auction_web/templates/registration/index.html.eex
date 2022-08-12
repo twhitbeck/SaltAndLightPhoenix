@@ -1,31 +1,50 @@
-<ul>
-  <h1> Here we are in registrations </h1>
+<p>
   <strong><%= @firstname %> <%= @lastname %></strong>
   <% classes_length = length(@classes) - 1 %>
-  
-</ul>
- <style>
-table, th, td {
-  width: 1200px;
-  border: 1px solid black;
-<div class="dropdown">
-  <span>Mouse over me</span>
-  <div class="dropdown-content">
-  <p>Hello World!</p>
-  </div>
-</div>
+</p>
 
+
+<% # make a drop down list of titles %>
+<% # purpose is to display all classes for a title %>
+
+<form method="get">
+<label for="classes">List of classes:</label>
+<input list="classtitles" name = "classtitle" id = "classtitle">
+
+<datalist id="classtitles">
+  <%= for i <- 0..Enum.count(@titlelist)-1 do %> 
+    <option value="<%= Enum.at(@titlelist,i) %>">
+  <% end %> 
+
+</datalist>
+  <input type="submit">
+</form>
+
+ <style>
+
+ table {
+   border-collapse: collapse;
+ }
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 6px;
+}
 </style>
+
   <table>
     <tr>
-      <th>&nbsp;&nbsp; Class title &nbsp; </th>
+      <th>Class title</th>
       <th>Section</th>
       <th>Period</th>
-      <th>Fee &nbsp;</th>
+      <th>Fee</th>
       <th>Semester</th>
-      <th>Teacher </th>
-      <th>Helper1 </th>
-      <th>Helper2 &nbsp; &nbsp; </th>
+      <th>Teacher</th>
+      <th>Helper1</th>
+      <th>Helper2</th>
     </tr>  
 
 <%= for {class, i} <- Enum.with_index(@classes,0) do%>
@@ -38,6 +57,5 @@ table, th, td {
     </tr> 
 <% end %>
   </table>
-
 
 
