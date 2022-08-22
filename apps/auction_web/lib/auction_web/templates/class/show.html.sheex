@@ -1,0 +1,64 @@
+<%# require IEx; IEx.pry() %>
+<%# assigns ClassTitle.description - plus classes - a list of class info (map) %>
+<html>
+<body>
+<h1>Class data</h1>
+<input list="classtitles" name = "classtitle" id = "classtitle">
+<section class="row">
+  <h2>Survey</h2>
+</section>
+ <style>
+
+ table {
+   border-collapse: collapse;
+ }
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 6px;
+}
+</style>
+
+  <table>
+    <tr  onclick="myFunction(this)">
+      <th>Class title</th>
+      <th>Section</th>
+      <th>Period</th>
+      <th>Fee</th>
+      <th>Semester</th>
+      <th>Teacher</th>
+      <th>Helper1</th>
+      <th>Helper2</th>
+    </tr>  
+
+<%= for {class, i} <- Enum.with_index(@classes,0) do%>
+<%= for {item, k} <- Enum.with_index(class,1) do%>
+  <%=# for {item, j} <- Enum.at(class,1) do%> 
+      <td> <%= item %> </td>
+
+
+<% end %>
+
+<% end %>
+  </table>
+<script>
+var tbody = document.getElementById("contacts-body");
+var rows = tbody.getElementsByTagName("tr");
+for (i = 0; i < rows.length; i++) {
+  const row = rows[i];
+  row.addEventListener('click', showContact);
+}
+
+function showContact(e) {
+  let id = e.currentTarget.id;
+  if (id) {
+    window.location.href = '/contacts/' + id;
+  }
+}
+</script>
+
+</body>
+</html>

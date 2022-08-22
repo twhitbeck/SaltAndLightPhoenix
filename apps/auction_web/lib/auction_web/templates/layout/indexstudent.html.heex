@@ -3,6 +3,7 @@
   <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
   <%= @inner_content %>
 
+
 </main>
 
 <div class="container" style="border-bottom: 1px solid #777777; 
@@ -15,7 +16,7 @@
      |
     <%= link "New Student ",   to: Routes.student_path(@conn, :new) %>
     |
-    <%= link "List Classes",   to: Routes.student_registration_path(@conn, :index), method: :index %>
+    <%=# link "List Classes",   to: Routes.student_registration_path(@conn, :index), method: :index %>
     |
     <%= link "Log out",        to: Routes.session_path(@conn, :delete), method: :delete %>
   <% else %>

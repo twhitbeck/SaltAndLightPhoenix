@@ -1,18 +1,109 @@
 <%# require IEx; IEx.pry() %>
-<h1>Class data</h1>
-<% # @student_ID appears to be a place holder only %> 
- <% IO.puts("show class") %>
-<%= form_for @student, Routes.student_path(@conn, :show ,@student_id), fn f -> %>
-  <%= label f,      "First Name" %>
-  <%= error_tag f,  :firstname  %>
-  <%= text_input f, :firstname  %>
-  
-  <%= label f,      "Grade"  %>
-  <%= error_tag f,  :grade %>
-  <%= text_input f, :grade %>
+<%# assigns ClassTitle.description - plus classes - a list of class info (map) %>
+<html>
+<body>
+<head>
+<style>
+.table-layout {
+    text-align: center;
+    border: 1px solid black;
+    border-collapse: collapse;
+    font-family:"Trebuchet MS";
+    margin: 0 auto 0;
+}
+.table-layout td, .table-layout th {
+    border: 1px solid grey;
+    padding: 5px 5px 0;
+}
+.table-layout td {
+    text-align: left;
+}
+.selected {
+    color: red;
+}
+</style>
+</head>
 
-  <%= label f,      "Birthday" %>
-  <%= error_tag f,  :birthday %>
-  <%= text_input f, :birthday %>
-<% end %>  
+<h2><%=@title %></h2>
+<style>
+.table-layout {
+    text-align: center;
+    border: 1px solid black;
+    border-collapse: collapse;
+    font-family:"Trebuchet MS";
+    margin: 0 auto 0;
+}
+.table-layout td, .table-layout th {
+    border: 1px solid grey;
+    padding: 5px 5px 0;
+}
+.table-layout td {
+    text-align: left;
+}
+.selected {
+    color: red;
+}
 
+</style>
+
+<button type="button" onclick="alert('Register class')">Register class!</button><br><br>
+
+Read more: https://html.com/attributes/button-type/#ixzz7ciFUji1p 
+  <table <table id="classTable" class="table-layout">
+    <tr  onclick="(this)">
+      <th>ClassID </th>
+      <th>Class title</th>
+      <th>Section</th>
+      <th>Period</th>
+      <th>Fee</th>
+      <th>Semester</th>
+      <th>Teacher</th>
+      <th>Helper1</th>
+      <th>Helper2</th>
+    </tr>  
+
+
+<%= for {class, i} <- Enum.with_index(@classes,0) do%>
+<%= for {item, k} <- Enum.with_index(class,0) do%>
+<td> &nbsp;  <%= item %> </td>
+<% end %>
+
+  </tr> 
+<% end %>
+  </table>
+
+
+<script>
+highlight_row();
+function highlight_row() {
+    var table = document.getElementById('classTable');
+    var cells = table.getElementsByTagName('td');
+
+    for (var i = 0; i < cells.length; i++) {
+        // Take each cell
+        var cell = cells[i];
+        // do something on onclick event for cell
+        cell.onclick = function () {
+            // Get the row id where the cell exists
+            var rowId = this.parentNode.rowIndex;
+
+            var rowsNotSelected = table.getElementsByTagName('tr');
+            for (var row = 0; row < rowsNotSelected.length; row++) {
+                rowsNotSelected[row].style.backgroundColor = "";
+                rowsNotSelected[row].classList.remove('selected');
+            }
+            var rowSelected = table.getElementsByTagName('tr')[rowId];
+            rowSelected.style.backgroundColor = "yellow";
+            rowSelected.className += " selected";
+
+            classID = rowSelected.cells[0].innerHTML;
+            let CID = classID; //record the id of the selected row 
+            alert(msg);
+        }
+    }
+
+}
+</script>
+
+</body>
+</htnl>

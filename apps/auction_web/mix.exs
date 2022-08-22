@@ -48,22 +48,26 @@ defmodule AuctionWeb.MixProject do
       {:phoenix_live_dashboard, "~> 0.6.5"},
       {:esbuild, "~> 0.4.0", runtime: Mix.env() == :dev},
       {:timex, "~> 3.0"},
-      #{:telemetry_metrics, "~> 0.6"},
-      #{:telemetry_poller, "~> 1.0"},
+      # {:telemetry_metrics, "~> 0.6"},
+      # {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.3.0"},
       {:plug_cowboy, "~> 2.5.2"},
-      {:auction, in_umbrella: true},
+      {:auction, in_umbrella: true}
+      # {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
+      # {:temple, "~> 0.9.0-rc.0"},
     ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
   #
   # See the documentation for `Mix` for more info on aliases.
+
   defp aliases do
     [
       setup: ["deps.get"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      # "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]
   end
 end

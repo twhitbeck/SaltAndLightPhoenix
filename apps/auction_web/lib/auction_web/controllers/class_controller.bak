@@ -1,0 +1,102 @@
+defmodule AuctionWeb.ClassController do
+  use AuctionWeb, :controller
+
+  alias Auction.Class
+  #import Auction.Student
+
+  plug :require_logged_in_user
+  def index(conn, _params) do
+    IO.puts("MADE IT TO INDEX")
+    current_user = Map.get(conn.assigns, :current_user)
+    userid=current_user.id
+    classtitle_list = Auction.get_classtitles()
+    last_name = Auction.get_profile(userid).lastname
+    # show_classes needs fixed
+    students = Auction.show_classes(userid).classes #students is a list of structs
+    render(conn, "index.html", students: students ,lastname: last_name,
+      layout: {AuctionWeb.LayoutView, "indexstudent.html"})
+  end
+
+  def new(conn, _params) do  # conn - a plug containing request and response information.
+    class = Auction.new_class()
+    render(conn, "new.html", class: class)#, conn: conn)
+  end
+
+  def create(conn, %{"class" => class_params}) do
+    # get current_user
+    current_user = Map.get(conn.assigns, :current_user)
+    # get current_user.id
+    userid=current_user.id
+    # insert user :id into student :user_id
+    classparams = Map.put(class_params, "user_id", userid)
+    #%Student{}#Auction.Student
+    stuff = Class.changeset(%Class{}, classparams)
+    #stuff = assign(stuff, :action, Routes.student_path(conn, :show))
+
+    case stuff do #Auction.insert_student(studentparams) do
+      {:ok, class}    -> redirect(conn, to: Routes.class_path(conn, :show, class))
+      {:error, class} -> render(conn, "new.html", class: class)
+    end
+  end
+
+  ############################################################
+  # student is a changeset - student.data is a schema struct #
+  # Obtained student_id from the id: field in the struct     #
+  ############################################################
+  def show(conn, %{"id" => id}) do
+    current_user = Map.get(conn.assigns, :current_user)
+    userid=current_user.id
+    class = Auction.show_class(id)   # changeset
+    class_id = class.data.id
+    # assign student to @student and student_id to @student_id
+    IO.puts("SHOW CLASS")
+    IO.inspect(id)
+    render(conn, "show.html", class: class, class_id: class_id, # use a different layout than app
+      layout: {AuctionWeb.LayoutView, "showclass.html"})
+  end
+
+  def edit(conn, %{"id" => id}) do #_ \\ %{}) do #%{"id" => id}) do #%{"id" => id}) do
+    IO.puts("EDIT CLASS ID")
+    IO.inspect(id)
+    current_user = Map.get(conn.assigns, :current_user)
+    userid=current_user.id                # get user id - links to user table
+    class = Auction.show_class(id)    # get student changeset by student.id  - firstname, grade, birthday
+    class_id = class.data.id
+    #firstname = student.data.firstname
+    # lastname is contained in profile belonging to user
+    #lastname = Auction.get_student_profile(userid)
+    #lastname = lastname.data.lastname
+    render(conn, "edit.html", class: class, conn: conn, class_id: class_id,
+      layout: {AuctionWeb.LayoutView, "editclass.html"})
+  end
+
+  def update(conn, student_params) do
+    current_user = Map.get(conn.assigns, :current_user)
+    userid=current_user.id
+    student = Auction.get_student(userid)
+    student_id = student.data.id
+    IO.puts("inspect student id")
+    IO.inspect(student_id)
+    firstname = student.data.firstname
+    lastname = Auction.get_student_profile(userid)
+    lastname = lastname.data.lastname
+    #params = Auction.Student.changeset(student_params)
+    case Auction.update_student(student, student_params) do
+      {:ok, student} -> redirect(conn, to: Routes.student_path(conn, :show, student))
+      {:error, student} -> render(conn, "edit.html", student: student, conn: conn, firstname: firstname, lastname: lastname, student_id: student_id,
+        layout: {AuctionWeb.LayoutView, "editstudent.html"})
+    end
+  end
+
+  # Pattern match to determine that there is no current user
+  defp require_logged_in_user(%{assigns: %{current_user: nil}} = conn, _opts) do
+    conn
+    |> put_flash(:error, "You must be logged in to create a student.")
+    |> redirect(to: Routes.profile_path(conn, :show))
+    |> halt()
+    end
+
+    # Pass on the conn because there is a current user
+    defp require_logged_in_user(conn, _opts), do: conn
+
+end

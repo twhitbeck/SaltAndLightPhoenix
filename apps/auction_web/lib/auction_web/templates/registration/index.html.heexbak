@@ -1,32 +1,30 @@
-<html>
-<body>
 <p>
   <strong><%= @firstname %> <%= @lastname %></strong>
   <% classes_length = length(@classes) - 1 %>
 </p>
 
-<input type="button" onclick="window.open('http://localhost:4000/classes/13/','_blank','resizable=yes')" />
 
-<% IO.puts("STUDENT ID") %>
-<% IO.inspect(@student_id) %>
 <% # make a drop down list of titles %>
 <% # purpose is to display all classes for a title %>
 
+
+<datalist class="form-control" id="classtitles" hidden>
+     <%= for list <-@titlelist do %>
+           <option value={list.titlelist}></option>
+     <% end %>
+</datalist>
+
+
 <form method="get">
 <label for="classes">List of classes:</label>
-  <button onclick="history.go(0)">Clear</button>
-  
 <input list="classtitles" name = "classtitle" id = "classtitle">
 
-
-<datalist id="classtitles">
-  <%= for i <- 0..Enum.count(@titlelist)-1 do %> 
-    <option value="<%= Enum.at(@titlelist,i) %>">
-  <% end %> 
-
+<datalist class="form-control" id="classtitles" hidden>
+     <%= for list <-@titlelist do %>
+           <option value={list.titlelist}></option>
+     <% end %>
 </datalist>
-  <input type="submit" value = "Info">
-
+  <input type="submit">
 </form>
 
  <style>
@@ -63,19 +61,11 @@ th, td {
 
 
 <% end %>
-    </tr> 
+
 <% end %>
   </table>
 
 <script>
-
-function displayList() {
-  <%=# render AuctionWeb.RegistrationView, "index.html", assigns  %>
-
- <%= IO.puts("Submitted") %>
+function myFunction() {
 }
 </script>
-
-</body>
-</htnl>
-
