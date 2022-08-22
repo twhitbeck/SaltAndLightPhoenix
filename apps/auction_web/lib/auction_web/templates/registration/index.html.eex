@@ -16,6 +16,7 @@
 <label for="classes">List of classes:</label>
   <button onclick="history.go(0)">Clear</button>
   
+<<<<<<< HEAD
 <input list="classtitles" name = "classtitle" id = "classtitle">
 
 
@@ -29,6 +30,11 @@
 
 </form>
 
+=======
+</ul>
+
+
+>>>>>>> origin/main
  <style>
 
  table {
@@ -67,6 +73,7 @@ th, td {
 <% end %>
   </table>
 
+<<<<<<< HEAD
 <script>
 
 function displayList() {
@@ -79,3 +86,5 @@ function displayList() {
 </body>
 </htnl>
 
+=======
+>>>>>>> origin/main
