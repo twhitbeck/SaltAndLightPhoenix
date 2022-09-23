@@ -4,8 +4,6 @@ defmodule Auction.Registration do
   alias Auction.{Class, Student}
 
   schema "registrations" do
-    #field :student_id,  :integer
-    #field :class_id,    :integer
     field :semester,     :integer
     belongs_to :class,   Auction.Class         #reference registration.class    - class_id is a foreign key
     belongs_to :student, Auction.Student       #reference registration.students - student_id is a foreign key

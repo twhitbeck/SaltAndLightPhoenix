@@ -1,10 +1,10 @@
 defmodule AuctionWeb.ClassController do
   use AuctionWeb, :controller
-
+  import AuctionWeb.Router.Helpers
   alias Auction.Class
   # import Auction.Student
 
-  plug :require_logged_in_user
+  plug(:require_logged_in_user)
 
   # conn - a plug containing request and response information.
   def new(conn, _params) do
@@ -13,21 +13,18 @@ defmodule AuctionWeb.ClassController do
     render(conn, "new.html", class: class)
   end
 
-  def create(conn, %{"class" => class_params}) do
-    # get current_user
-    current_user = Map.get(conn.assigns, :current_user)
-    # get current_user.id
-    userid = current_user.id
-    # insert user :id into student :user_id
-    classparams = Map.put(class_params, "user_id", userid)
-    # %Student{}#Auction.Student
-    stuff = Class.changeset(%Class{}, classparams)
-    # stuff = assign(stuff, :action, Routes.student_path(conn, :show))
+  def create(conn, %{"registration" => registration_params}) do
+    IO.puts("Create registration")
+    IO.inspect(registration_params)
 
-    # Auction.insert_student(studentparams) do
-    case stuff do
-      {:ok, class} -> redirect(conn, to: Routes.class_path(conn, :show, class))
-      {:error, class} -> render(conn, "new.html", class: class)
+    case Auction.create_registration(registration_params) do
+      {:ok, registration} ->
+        conn
+        |> put_flash(:info, "Registration created successfully.")
+        |> redirect(to: Routes.student_registration_path(conn, :index, registration))
+
+      {:error, registration} ->
+        render(conn, "new.html", registration: registration)
     end
   end
 
@@ -62,23 +59,24 @@ defmodule AuctionWeb.ClassController do
   #  id is a classtitle   #
   #########################
   def show(conn, %{"id" => id} = _params) do
-    # def get_class_from_title(id) do
     # changeset
+    # get class title from title id
     classtitle = Auction.get_class_title(id)
-
-    IO.puts("CLASS LIST")
-
+    # get classlist - classes with the title corresponding to the title id
     classlist = Auction.get_class_from_title(id)
+
+    # classes:  a list- of sub lists, each sublist contains info for the particular class
     classes = Enum.map(classlist, fn x -> Auction.list_class_data(x.id, x.semester) end)
+
+    IO.puts("Show Classes")
     IO.inspect(classes)
-    IO.puts("SHOW CLASS CONTROLLER")
-    # IO.inspect(classtitle.description)
-    # IO.inspect(classes)
     # use a different layout than app
     conn
-    # Ex: "Early American History"
+    # Ex: "Study Hall"
+    |> assign(:id, id)
     |> assign(:title, classtitle.description)
     |> assign(:classes, classes)
+    # display a web page to select a particular class
     |> render("show.html")
   end
 

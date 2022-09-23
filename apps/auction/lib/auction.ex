@@ -1,6 +1,5 @@
 defmodule Auction do
   alias Auction.{Repo, User, Password, Profile, Student, Class, Classtitle, Registration}
-  # import Ecto.Changeset # Eliminate specifying Ecto.Changeset.cast, etc
   import Ecto.Query
 
   @repo Repo
@@ -263,11 +262,11 @@ defmodule Auction do
   # stuff = Student.changeset(%Student{}, studentparams)
   # check if there are students
   def check_students(id) do
-    user =
-      Auction.get_user(id)
-      # If there exists a student - nilstudent will be a list of student structs
-      # nilstudents = Repo.preload(user,:students).students
-      |> Repo.preload([:profiles, :students])
+    # user =
+    Auction.get_user(id)
+    # If there exists a student - nilstudent will be a list of student structs
+    # nilstudents = Repo.preload(user,:students).students
+    |> Repo.preload([:profiles, :students])
 
     # |> IO.inspect()
     # IO.puts("LAST NAME")
@@ -285,7 +284,9 @@ defmodule Auction do
   #  Registration.changeset(%Registration{})   # Return a blank changeset
   def new_registration, do: Registration.changeset(%Registration{})
 
-  def insert_registration(params) do
+  def create_registration(params) do
+    IO.puts("registration parameters")
+    IO.inspect(params)
     # Auction.Student
     %Registration{}
     # should return a change set with changes containing data
@@ -346,7 +347,7 @@ defmodule Auction do
     query = from(Registration, where: [student_id: ^id])
 
     # |> @repo.preload([class: :classtitle, class: :period, class: :section, class: :teacher, class: :helper1, class: :helper2])
-    results = @repo.all(query)
+    @repo.all(query)
   end
 
   ####################################
@@ -380,21 +381,6 @@ defmodule Auction do
 
   # stuff = Student.changeset(%Student{}, studentparams)
   # check if there are students
-  def check_students(id) do
-    user =
-      Auction.get_user(id)
-      # If there exists a student - nilstudent will be a list of student structs
-      # nilstudents = Repo.preload(user,:students).students
-      |> Repo.preload([:profiles, :students])
-
-    # |> IO.inspect()
-    # IO.puts("LAST NAME")
-    # IO.inspect(nilstudents.profiles.lastname)
-    # case nilstudents.profiles.lastname do
-    #  nil -> nil #check_nil()
-    #  _ -> #show_students(id)
-    # end
-  end
 
   def get_fee(semester, fallfee, springfee) do
     cond do
@@ -409,14 +395,13 @@ defmodule Auction do
   # id is registration id - return class for that registration. #
   ###############################################################
   def get_class_from_registration(id) do
-    classid =
-      get_registration(id).class_id
-      |> Auction.get_class()
-      |> @repo.preload([:classtitle, :period, :section, :teacher, :helper1, :helper2])
+    get_registration(id).class_id
+    |> Auction.get_class()
+    |> @repo.preload([:classtitle, :period, :section, :teacher, :helper1, :helper2])
   end
 
   ###############################################################
-  # id is class id - return class for that class.               #
+  # id is class id - return class for that class id.               #
   ###############################################################
   def get_class_from_classid(classid) do
     Auction.get_class(classid)
@@ -459,7 +444,8 @@ defmodule Auction do
   end
 
   def show_class(id) do
-    query = from(Class, order_by: [:description])
+    #query =
+    from(Class, order_by: [:description])
     # looks like a changeset
     get_class(id)
     |> Class.changeset()
@@ -489,10 +475,10 @@ defmodule Auction do
 
   # for x <- list, do: x.description
   def get_classtitles() do
-    query = from(Classtitle, order_by: [:description], select: [:description])
+    query = from(Classtitle, order_by: [:description], select: [:id, :description])
     # query = from(Classtitle, select: [:description])
     list = Repo.all(query)
-    for x <- list, do: x.description
+    for x <- list, do: [to_string(x.id) <> " " <> x.description]
   end
 
   def list_class_data(classid, semester) do
@@ -506,8 +492,8 @@ defmodule Auction do
     teachername = Auction.get_teacher_name(regdata.teacher.id)
     helper1name = Auction.get_teacher_name(regdata.helper1.id)
     helper2name = Auction.get_teacher_name(regdata.helper2.id)
-
-    list = [
+    #list =
+    [
       classid,
       classtitle,
       section,

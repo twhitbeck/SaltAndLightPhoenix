@@ -1,0 +1,87 @@
+<html>
+<body>
+<p>
+  <strong><%= @firstname %> <%= @lastname %></strong>
+  <% classes_length = length(@classes) - 1 %>
+</p>
+
+<input type="button" onclick="window.open('http://localhost:4000/classes/13/','_blank','resizable=yes')" />
+
+<% IO.puts("STUDENT ID") %>
+<% IO.inspect(@student_id) %>
+<% # make a drop down list of titles %>
+<% # purpose is to display all classes for a title %>
+
+<form method="get">
+<label for="classes">List of classes:</label>
+  <button onclick="history.go(0)">Clear</button>
+  
+<input list="classtitles" name = "classtitle" id = "classtitle">
+
+
+<datalist id="classtitles">
+  <%= for i <- 0..Enum.count(@titlelist)-1 do %> 
+    <option value="<%= Enum.at(@titlelist,i) %>">
+  <% end %> 
+
+</datalist>
+  <input type="submit" value = "Info">
+
+</form>
+
+=======
+</ul>
+
+ <style>
+
+ table {
+   border-collapse: collapse;
+ }
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 6px;
+}
+</style>
+
+  <table>
+    <tr>
+      <th>Class title</th>
+      <th>Section</th>
+      <th>Period</th>
+      <th>Fee</th>
+      <th>Semester</th>
+      <th>Teacher</th>
+      <th>Helper1</th>
+      <th>Helper2</th>
+    </tr>  
+
+<%= for {class, i} <- Enum.with_index(@classes,0) do%>
+<%= for {item, k} <- Enum.with_index(class,1) do%>
+  <%=# for {item, j} <- Enum.at(class,1) do%> 
+      <td> <%= item %> </td>
+
+
+<% end %>
+    </tr> 
+<% end %>
+  </table>
+
+<<<<<<< HEAD
+<script>
+
+function displayList() {
+  <%=# render AuctionWeb.RegistrationView, "index.html", assigns  %>
+
+ <%= IO.puts("Submitted") %>
+}
+</script>
+
+</body>
+</htnl>
+
+=======
+>>>>>>> origin/main

@@ -3,7 +3,9 @@
 <html>
 <body>
 <head>
-<p id="output"></p>
+<script>
+let CID = 0
+</script>
 <style>
 .table-layout {
     text-align: center;
@@ -44,12 +46,15 @@
 .selected {
     color: red;
 }
-<p name="classTitle">"Class Title ID"</p>
+
 </style>
 
-<%= IO.inspect(@id) %>
-<button type = "button" onclick="regFunction()">Register class</button>
-<button type = "button" onclick="alert('Cancel class')">Cancel!</button>
+<button type="button" onclick="alert('Register class')">Register class!</button><br><br>
+   <form action="http://localhost:4000/students/30/registrations?classid=39">
+   <input type="hidden" name="classID" value=39 />
+   <input type="submit" value="Send data">
+   </form>
+
 
   <table <table id="classTable" class="table-layout">
     <tr  onclick="(this)">
@@ -65,40 +70,23 @@
     </tr>  
 
 
-  <%= for {class, i} <- Enum.with_index(@classes,0) do%>
-    <%= for {item, k} <- Enum.with_index(class,0) do%>
-     <td> &nbsp;  <%= item %> </td>
-      <% end %>
-    </tr> 
-    <% end %>
+<%= for {class, i} <- Enum.with_index(@classes,0) do%>
+<%= for {item, k} <- Enum.with_index(class,0) do%>
+<td> &nbsp;  <%= item %> </td>
+<% end %>
+
+  </tr> 
+<% end %>
   </table>
 
-<script>
-   // if a class title row is not highlighted - do nothing
-   function regFunction() {
-    var titleid = document.getElementsByName("classTitle").innerHTML;
-    if (titleid !== null) { //Hah, we have the class title as a string var test
-    numtitle = Number(titleid);
-    var studentID = sessionStorage.getItem('student_id');
-    console.log(studentID);
-    console.log(numtitle);
-     <%=# link "Classes registered",   to: Routes.student_registration_path(@conn, :index,studentID %> 
-     <%=# render(AuctionWeb.SharedView, "form.index.html", assigns) %>
-     <%=# render_shared "form.html" %> 
-     <%=# render(AuctionWeb.RegistrationView, "index.html", assigns) %>
-    <%=# render (AuctionWeb.RegistrationView, "new.html", 13, 30) %>
-    <%=# render "create.html", Map.put(assigns, :action, Routes.class_student_registration_path(AuctionWeb.Endpoint, :create, titleid,studentID)) %>
-    }  
-}
-</script>
 
 <script>
-
 highlight_row();
-<% IO.puts("Registration show.html") %>
+
 function highlight_row() {
     var table = document.getElementById('classTable');
     var cells = table.getElementsByTagName('td');
+
     for (var i = 0; i < cells.length; i++) {
         // Take each cell
         var cell = cells[i];
@@ -106,6 +94,7 @@ function highlight_row() {
         cell.onclick = function () {
             // Get the row id where the cell exists
             var rowId = this.parentNode.rowIndex;
+
             var rowsNotSelected = table.getElementsByTagName('tr');
             for (var row = 0; row < rowsNotSelected.length; row++) {
                 rowsNotSelected[row].style.backgroundColor = "";
@@ -115,11 +104,9 @@ function highlight_row() {
             rowSelected.style.backgroundColor = "yellow";
             rowSelected.className += " selected";
 
-            var titleID = rowSelected.cells[0].innerHTML;
-            var num = titleID.replace( /^\D+/g, ''); //remove leading non digits
-            document.getElementsByName("classTitle").innerHTML = num;
-            console.log(num);
-            console.log("CLASS SHOW");
+            classID = rowSelected.cells[0].innerHTML;
+            CID = classID; //record the id of the selected row 
+            <%= IO.inspect(CID) %>
          }
     }
 

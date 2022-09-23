@@ -3,13 +3,14 @@
 
 <body>
 <p>
-  <strong><%= @firstname %> <%= @lastname %></strong>
   <% classes_length = length(@classes) - 1 %>
 </p>
 
 <% # make a drop down list of titles %>
 <% # purpose is to display all classes for a title %>
-<%= IO.inspect(@student_id) %>
+
+
+
 <!--reference name or manipulate id -->
 
 
@@ -17,13 +18,7 @@
 
 <label for="title">Choose your class title from the list:</label>
 <button onclick="history.go(0)">clear</button>
-  <input type="text" name = gettitles list="titles"}/>
-  <!-- build a data list of titles using a loop -->
-  <datalist id="titles">
-  <%= for i <- 0..Enum.count(@titlelist)-1 do %> 
-    <option value="<%= Enum.at(@titlelist,i) %>">
-  <% end %> 
-
+ 
 </datalist>
   <span id="spanresult"></span>
 
@@ -32,18 +27,13 @@
     var getvalue=document.getElementsByName('gettitles')[0];
 
     getvalue.addEventListener('input', function()
-    { console.log("registration index function")
+    { console.log("class index function")
       var classtitle = this.value;
-      console.log("This.value");
       document.getElementById("spanresult").innerHTML="Select value is : "+this.value;
       console.log(classtitle)
       const titleArray = classtitle.split(" ");
       var titleid=titleArray[0];
-     // console.log(titleid)
-     //render SprawlWeb.SharedView, "show.html",@student_id
-     //IO.puts("render shared");
-     sessionStorage.setItem('student_id', 30)
-    
+      console.log(titleid)
       window.open("http://localhost:4000/classes/"+titleid, features);
     });
 </script> 

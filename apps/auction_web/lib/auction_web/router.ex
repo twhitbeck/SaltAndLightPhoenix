@@ -7,24 +7,26 @@ defmodule AuctionWeb.Router do
   @options [:show, :new, :create, :edit, :update, :delete, :index]
   @roptions [:show, :new, :create, :delete, :index]
   @coptions [:show, :new, :create, :delete, :index]
+  @rcoptions [:create]
 
   # pass conn thru from first defined to last defined
   pipeline :browser do
-    plug :accepts, ["html", "json"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, {AuctionWeb.LayoutView, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug AuctionWeb.Authenticator
+    plug(:accepts, ["html", "json"])
+    plug(:fetch_session)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, {AuctionWeb.LayoutView, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
+    plug(AuctionWeb.Authenticator)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   scope "/", AuctionWeb do
-    pipe_through :browser
+    get("/profiles", ProfileController, :show)
+    pipe_through(:browser)
     #########################################
     # pass conn thru the :browser pipeline  #
     # Stored dispatch function for "/" is   #
@@ -38,14 +40,20 @@ defmodule AuctionWeb.Router do
     # iex(22)> AuctionWeb.Router.Helpers.student_path(AuctionWeb.Endpoint, :edit,1)
     # iex(3)> AuctionWeb.Router.Helpers.user_student_path(AuctionWeb.Endpoint, :show,1,1)
 
-    get "/", PageController, :index
-    resources "/users", UserController, only: [:show, :new, :create]
-    resources "/profiles", ProfileController, singleton: true
-    resources "/classes", ClassController, only: @roptions
+    get("/", PageController, :index)
+    resources("/users", UserController, only: [:show, :new, :create])
+    resources("/profiles", ProfileController, singleton: true)
+    resources("/registrations", RegistrationController, only: @roptions)
+
+    resources "/classes", ClassController, only: @roptions do
+      resources "/students", StudentController, only: [:index, :new, :create] do
+        resources("/registrations", RegistrationController, only: [:index, :create, :new])
+      end
+    end
+
     #  student_class_path and student_registration_path nested resources
     resources "/students", StudentController, only: @options do
-      # resources "/classes", ClassController, only: @coptions
-      resources "/registrations", RegistrationController, only: @roptions
+      resources("/registrations", RegistrationController, only: @roptions)
     end
 
     # student_class_path
@@ -55,9 +63,9 @@ defmodule AuctionWeb.Router do
 
     # get       "/students", StudentController, :index
     # resources "/students", StudentController, only: @options
-    delete "/logout", SessionController, :delete
-    get "/login", SessionController, :new
-    post "/login", SessionController, :create
+    delete("/logout", SessionController, :delete)
+    get("/login", SessionController, :new)
+    post("/login", SessionController, :create)
 
     # live_dashboard "/dashboard", metrics: AuctionWeb.Telemetry
   end
@@ -68,9 +76,9 @@ defmodule AuctionWeb.Router do
   # node running the Phoenix server.
   if Mix.env() == :dev do
     scope "/dev" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
+      forward("/mailbox", Plug.Swoosh.MailboxPreview)
     end
   end
 end

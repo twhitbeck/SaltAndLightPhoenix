@@ -1,6 +1,4 @@
 defmodule Auction.Location do
-  use Ecto.Schema
-  import Ecto.Changeset
 
   schema "classes" do
     field :section,      :string

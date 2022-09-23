@@ -1,9 +1,8 @@
 defmodule AuctionWeb.RegistrationController do
   use AuctionWeb, :controller
-  alias Auction.Registration
   # import Auction.Student
 
-  plug :require_logged_in_user
+  plug(:require_logged_in_user)
 
   ######################################################################
   # registration is a changeset - registration.data is a schema struct #
@@ -18,22 +17,20 @@ defmodule AuctionWeb.RegistrationController do
 
   #######################################################################
   # Note. The fat arrow designates a key => value pair within a map.    #
-  # where the name of the map is assigned to the variable placeholder x #
+  # where the name of the map is assigned to the variable placeholder   #
+  # Create - recieve the parameters needed for one new registration     #
+  #  and then saves the registration to the data store.                 #
+  # Need only - (1) student_id, (2) class_id                            #
   #######################################################################
   def create(conn, %{"registration" => registration_params}) do
-    # get current_user
-    current_user = Map.get(conn.assigns, :current_user)
-    # get current_user.id
-    userid = current_user.id
-    # insert user :id into student :user_id
-    registrationparams = Map.put(registration_params, "user_id", userid)
-    # %Student{}#Auction.Student
-    stuff = Registration.changeset(%Registration{}, registrationparams)
-    # stuff = assign(stuff, :action, Routes.student_path(conn, :show))
-    # Auction.insert_student(studentparams) do
-    case stuff do
+    IO.puts("Create registration")
+    IO.inspect(registration_params)
+
+    case Auction.create_registration(registration_params) do
       {:ok, registration} ->
-        redirect(conn, to: Routes.registration_path(conn, :show, registration))
+        conn
+        |> put_flash(:info, "Registration created successfully.")
+        |> redirect(to: Routes.student_registration_path(conn, :index, registration))
 
       {:error, registration} ->
         render(conn, "new.html", registration: registration)
@@ -44,9 +41,9 @@ defmodule AuctionWeb.RegistrationController do
   # list registrations for student - input as student_id #
   ########################################################
   # student id
-  def index(conn, %{"student_id" => student_id} = _params) do
-    IO.puts("Registration Index")
-    IO.inspect(_params)
+  def index(conn, %{"student_id" => student_id} = params) do
+    IO.puts("Registration Controller Index function")
+    # EX: %{"classtitle" => "Chess & Games", "student_id" => "30"}
     firstname = Auction.get_student(student_id).firstname
     current_user = Map.get(conn.assigns, :current_user)
     userid = current_user.id
@@ -57,9 +54,8 @@ defmodule AuctionWeb.RegistrationController do
     # classes is a list of class ids #
     # One list of lists              #
     ##################################
-    classes =
-      Enum.map(regs, fn x -> Auction.list_class_data(x.class_id, x.semester) end)
-      |> IO.inspect()
+    classes = Enum.map(regs, fn x -> Auction.list_class_data(x.class_id, x.semester) end)
+    # |> IO.inspect()
 
     # Auction.testlist(classes)
     # [
@@ -69,13 +65,14 @@ defmodule AuctionWeb.RegistrationController do
     #  ["Gym", "1-2", "12:00 PM", "fee unknown", 1, "Vanessa Campbell",
     #   "Helen Lorah", "Elyse Stobart"]
     # ]
-    classtitlelist =
-      Auction.get_classtitles()
-      |> IO.inspect()
+    classtitle = params["classtitle"]
+    # |> IO.inspect()
 
-    IO.puts("Render to registration index.html")
+    classtitlelist = Auction.get_classtitles()
+    # |> IO.inspect()
 
     conn
+    |> assign(:class_params, params)
     |> assign(:titlelist, classtitlelist)
     |> assign(:student_id, student_id)
     |> assign(:firstname, firstname)
@@ -100,9 +97,8 @@ defmodule AuctionWeb.RegistrationController do
     reg_list = Auction.get_registration_by_one(id)
     reg_map = Enum.at(reg_list, 0)
 
-    registration_id =
-      reg_map.id
-      |> IO.inspect()
+    registration_id = reg_map.id
+    # |> IO.inspect()
 
     IO.puts("reg id")
     classtitle = regdata.class.classtitle.description

@@ -1,7 +1,7 @@
 defmodule Auction.Classtitle do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Auction.{Class, Classtitle}
+  #alias Auction.{Class, Classtitle}
   schema "classtitles" do
     field  :description,  :string
     has_many              :classes,  Auction.Class
