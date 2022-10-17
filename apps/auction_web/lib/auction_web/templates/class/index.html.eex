@@ -11,9 +11,9 @@ IO.puts("SHOWING ASSIGNS WHEN NEED TO KNOW THIS")
 <% # purpose is to display all classes for a title %>
 <h2> templates class index </h2>
 <!--reference name or manipulate id -->
-
-<label for="title">Choose your class title from the list:</label>
-<button onclick="history.go(0)">clear</button>
+<P>
+<h2> for="title">Choose your class title from the list:</h2>
+</p>
 
 </datalist>
   <span id="spanresult"></span>
@@ -109,6 +109,7 @@ function highlight_row() {
 
 }
 </script>
+
 <span><%= link "Back", to: Routes.student_path(@conn, :index) %></span>
 
 

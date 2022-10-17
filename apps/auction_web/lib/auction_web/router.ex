@@ -50,9 +50,9 @@ defmodule AuctionWeb.Router do
     resources "/classes", ClassController, only: @roptions do
       forward("/profile", Plugs.ProfileRedirector)
 
-      #resources "/students", StudentController, only: [:index, :new, :create] do
-     #   resources("/registrations", RegistrationController, only: [:index, :create, :new])
-     # end
+      # resources "/students", StudentController, only: [:index, :new, :create] do
+      #   resources("/registrations", RegistrationController, only: [:index, :create, :new])
+      # end
     end
 
     #  student_class_path and student_registration_path nested resources
@@ -77,7 +77,7 @@ defmodule AuctionWeb.Router do
   scope "/api", AuctionWeb do
     pipe_through(:api)
 
-    resources("/registration", RegistrationController)
+    resources("/registration", RegistrationController, only: [:show])
   end
 
   # Enables the Swoosh mailbox preview in development.

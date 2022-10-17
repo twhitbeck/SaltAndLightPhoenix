@@ -67,13 +67,11 @@
   <% end %>
 </table>
 
-<%= link "Student Page!", to: Routes.student_path(@conn, :index) %>
-
 
 <script>
   function cancelFunction() {
-   const regid  = localStorage.getItem("regIndex");
-   alert(regid);
+       const regid  = localStorage.getItem("regIndex");
+       window.location.replace(regid);
 }
 
 </script>
@@ -115,9 +113,9 @@ function highlight_row() {
 }
 </script>
 <form    name="regform" id = reg_form  action="" METHOD="POST">
-  <input type="text"    name = "studentbox"  class = "required"   id = "studentid" >
-  <input type="text"    name = "classbox"    class = "required"   id = "classid" >
-  <input type="text"    name = "semesterbox" class = "required"   id = "semester">
+  <input hidden type="text"    name = "studentbox"  class = "required"   id = "studentid" >
+  <input hidden type="text"    name = "classbox"    class = "required"   id = "classid" >
+  <input hidden type="text"    name = "semesterbox" class = "required"   id = "semester">
 
   <input disabled id = submitbtn type="submit">
 </form>

@@ -1,11 +1,13 @@
 <html>
 <!-- Available assigns: [:class_params, :classes, :conn, :current_user, :firstname, :lastname, :student_id, :titlelist] -->
-<body>
 
 <p>
   <strong><%= @firstname %> <%= @lastname %></strong>
 <p id="demo">
 <!--reference name or manipulate id -->
+
+</head>
+
 
 <script>
 function getCurrentURL () {
@@ -17,7 +19,8 @@ function getCurrentURL () {
 <% # purpose is to display all classes for a title %>
 
 <label for="title">Choose your class title from the list:</label>
-<button onclick="history.go(0)">clear</button>
+<p></p>
+
 
   <select id="classtitles-select">
   <option value="<%= 0 %>"><%= "" %></option>
@@ -123,8 +126,8 @@ function highlight_row() {
 
 }
 </script>
-<span><%= link "Back", to: Routes.student_path(@conn, :index) %></span>
-<span><%= link "New Registration", to: Routes.student_registration_path(@conn, :new, @student_id) %></span>
+<span><%=# link "Back", to: Routes.student_path(@conn, :index) %></span>
+<span><%=# link "New Registration", to: Routes.student_registration_path(@conn, :new, @student_id) %></span>
 <span><%=# link "New Registration", to: Routes.student_registration_path(@conn, :new) %></span>
 
 
