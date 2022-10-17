@@ -15,13 +15,13 @@ defmodule AuctionWeb.ClassController do
 
   def create(conn, %{"registration" => registration_params}) do
     IO.puts("Create registration")
-    IO.inspect(registration_params)
+    # IO.inspect(registration_params)
 
     case Auction.create_registration(registration_params) do
       {:ok, registration} ->
         conn
-        |> put_flash(:info, "Registration created successfully.")
-        |> redirect(to: Routes.student_registration_path(conn, :index, registration))
+        # |> put_flash(:info, "Registration created successfully.")
+        |> redirect(to: Routes.student_registration_path(:index, registration))
 
       {:error, registration} ->
         render(conn, "new.html", registration: registration)
@@ -66,16 +66,14 @@ defmodule AuctionWeb.ClassController do
     classlist = Auction.get_class_from_title(id)
 
     # classes:  a list- of sub lists, each sublist contains info for the particular class
-    classes = Enum.map(classlist, fn x -> Auction.list_class_data(x.id, x.semester) end)
+    # classes = Enum.map(classlist, fn x -> Auction.list_class_data(x.id, x.semester) end)
 
-    IO.puts("Show Classes")
-    IO.inspect(classes)
     # use a different layout than app
     conn
     # Ex: "Study Hall"
     |> assign(:id, id)
     |> assign(:title, classtitle.description)
-    |> assign(:classes, classes)
+    |> assign(:classes, classlist)
     # display a web page to select a particular class
     |> render("show.html")
   end
@@ -83,7 +81,7 @@ defmodule AuctionWeb.ClassController do
   # _ \\ %{}) do #%{"id" => id}) do #%{"id" => id}) do
   def edit(conn, %{"id" => id}) do
     IO.puts("EDIT CLASS ID")
-    IO.inspect(id)
+    # IO.inspect(id)
     current_user = Map.get(conn.assigns, :current_user)
     # get user id - links to user table
     userid = current_user.id

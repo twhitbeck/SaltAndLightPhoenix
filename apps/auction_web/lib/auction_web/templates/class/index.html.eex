@@ -1,28 +1,25 @@
 
 <html>
-
+<!--Available assigns: [] -->
 <body>
 <p>
   <% classes_length = length(@classes) - 1 %>
 </p>
-
+IO.puts("SHOWING ASSIGNS WHEN NEED TO KNOW THIS")
+<%= @classid %> = @classid;
 <% # make a drop down list of titles %>
 <% # purpose is to display all classes for a title %>
-
-
-
+<h2> templates class index </h2>
 <!--reference name or manipulate id -->
-
-
-<center>
 
 <label for="title">Choose your class title from the list:</label>
 <button onclick="history.go(0)">clear</button>
- 
+
 </datalist>
   <span id="spanresult"></span>
 
   <script>
+  console.log("script")
     let features =  'scrollbars=yes","resizable=yes,top=200,left=400,width=1200,height=700 menubar=yes,location=yes,status=no';
     var getvalue=document.getElementsByName('gettitles')[0];
 
@@ -32,16 +29,15 @@
       document.getElementById("spanresult").innerHTML="Select value is : "+this.value;
       console.log(classtitle)
       const titleArray = classtitle.split(" ");
-      var titleid=titleArray[0];
       console.log(titleid)
       window.open("http://localhost:4000/classes/"+titleid, features);
     });
-</script> 
+</script>
 
 <span id = "spanresult"></span>
-</center>
 
-
+<%= IO.puts("inspect titleid") %>
+<%= IO.inspect(@titleid) %>
 </ul>
 
  <style>
@@ -59,7 +55,7 @@ th, td {
 }
 </style>
 
-  <table <table id="classTable" class="table-layout">
+  <table id="classTable" class="table-layout">
     <tr  onclick="(this)">
       <th>ClassID </th>
       <th>Class title</th>
@@ -70,7 +66,7 @@ th, td {
       <th>Teacher</th>
       <th>Helper1</th>
       <th>Helper2</th>
-    </tr>  
+    </tr>
 
 
     <%= for {class, i} <- Enum.with_index(@classes,0) do%>
@@ -78,7 +74,7 @@ th, td {
         <td> &nbsp;  <%= item %> </td>
       <% end %>
 
-      </tr> 
+      </tr>
     <% end %>
   </table>
 
@@ -107,8 +103,7 @@ function highlight_row() {
 
             let classID = rowSelected.cells[0].innerHTML;
             let text = classID[0].toString();
-         
-          
+
          }
     }
 

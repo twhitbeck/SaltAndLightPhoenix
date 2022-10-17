@@ -1,13 +1,13 @@
 <%# require IEx; IEx.pry() %>
 <h2>Registration data for <%= @student_name%> </h2>
 <%= IO.inspect(@student_name) %>
-<% IO.puts(" @student_ID appears to be a place holder only") %> 
+<% IO.puts(" @student_ID appears to be a place holder only") %>
 <% IO.inspect(@student_id) %>
- 
+
 <%=# form_for @student, Routes.student_path(@conn, :show ,@student.data), fn f -> %>
 
-<% # @student_ID appears to be a place holder only %> 
- <% IO.puts("show classes") %>
+<% # @student_ID appears to be a place holder only %>
+ <% IO.puts("registration show classes") %>
   <style>
 table, th, td {
   border: 1px solid black;
@@ -33,7 +33,6 @@ table, th, td {
       <td><%=  @period %></td>
       <td><%=  @fee %></td>
     </tr>
- 
+
   </table>
   <%= IO.puts("SHOEs STUDENT HTML") %>
-

@@ -1,5 +1,6 @@
 <%# require IEx; IEx.pry() %>
 <%# assigns ClassTitle.description - plus classes - a list of class info (map) %>
+<!--Available assigns: [:classes, :conn, :current_user, :id, :title] -->
 <html>
 <body>
 <head>
@@ -22,19 +23,6 @@
 .selected {
     color: red;
 }
-</style>
-</head>
-
-<h2><%=@title %></h2>
-<style>
-.table-layout {
-    text-align: center;
-    border: 1px solid black;
-    border-collapse: collapse;
-    font-family:"Trebuchet MS";
-    margin: 0 auto 0;
-}
-.table-layout td, .table-layout th {
     border: 1px solid grey;
     padding: 5px 5px 0;
 }
@@ -44,16 +32,17 @@
 .selected {
     color: red;
 }
-<p name="classTitle">"Class Title ID"</p>
+
+
 </style>
 
-<%= IO.inspect(@id) %>
-<button type = "button" onclick="regFunction()">Register class</button>
-<button type = "button" onclick="alert('Cancel class')">Cancel!</button>
+<html>
+<body>
 
-  <table <table id="classTable" class="table-layout">
+<input type = "button" onclick = "cancelFunction()" value = "Cancel">
+
+<table id="classTable" class="table-layout">
     <tr  onclick="(this)">
-      <th>ClassID </th>
       <th>Class title</th>
       <th>Section</th>
       <th>Period</th>
@@ -62,40 +51,36 @@
       <th>Teacher</th>
       <th>Helper1</th>
       <th>Helper2</th>
-    </tr>  
+    </tr>
 
+  <%= for class <- @classes do%>
+ <tr data-class-id="<%= class.id %>">
+  <td><%= class.classtitle.description %></td>
+  <td><%= class.section.description %></td>
+  <td><%= class.period.time %></td>
+  <td>$<%= class.fallfee %>.00</td>
+  <td><%= class.semester %></td>
+  <td><%= class.teacher.username %></td>
+  <td><%= class.helper1.username %></td>
+  <td><%= class.helper2.username %></td>
+ </tr>
+  <% end %>
+</table>
 
-  <%= for {class, i} <- Enum.with_index(@classes,0) do%>
-    <%= for {item, k} <- Enum.with_index(class,0) do%>
-     <td> &nbsp;  <%= item %> </td>
-      <% end %>
-    </tr> 
-    <% end %>
-  </table>
+<%= link "Student Page!", to: Routes.student_path(@conn, :index) %>
+
 
 <script>
-   // if a class title row is not highlighted - do nothing
-   function regFunction() {
-    var titleid = document.getElementsByName("classTitle").innerHTML;
-    if (titleid !== null) { //Hah, we have the class title as a string var test
-    numtitle = Number(titleid);
-    var studentID = sessionStorage.getItem('student_id');
-    console.log(studentID);
-    console.log(numtitle);
-     <%=# link "Classes registered",   to: Routes.student_registration_path(@conn, :index,studentID %> 
-     <%=# render(AuctionWeb.SharedView, "form.index.html", assigns) %>
-     <%=# render_shared "form.html" %> 
-     <%=# render(AuctionWeb.RegistrationView, "index.html", assigns) %>
-    <%=# render (AuctionWeb.RegistrationView, "new.html", 13, 30) %>
-    <%=# render "create.html", Map.put(assigns, :action, Routes.class_student_registration_path(AuctionWeb.Endpoint, :create, titleid,studentID)) %>
-    }  
+  function cancelFunction() {
+   const regid  = localStorage.getItem("regIndex");
+   alert(regid);
 }
+
 </script>
 
 <script>
-
 highlight_row();
-<% IO.puts("Registration show.html") %>
+
 function highlight_row() {
     var table = document.getElementById('classTable');
     var cells = table.getElementsByTagName('td');
@@ -115,17 +100,103 @@ function highlight_row() {
             rowSelected.style.backgroundColor = "yellow";
             rowSelected.className += " selected";
 
-            var titleID = rowSelected.cells[0].innerHTML;
-            var num = titleID.replace( /^\D+/g, ''); //remove leading non digits
-            document.getElementsByName("classTitle").innerHTML = num;
-            console.log(num);
-            console.log("CLASS SHOW");
+            const studentid  = localStorage.getItem("studentID");
+            const classId = rowSelected.dataset.classId;
+            const semester = rowSelected.cells[4].innerText;
+            //studentid =  window["studentID"];
+
+            document.getElementById('studentid').setAttribute('value', studentid);
+            document.getElementById('classid').setAttribute('value', classId);
+            document.getElementById('semester').setAttribute('value', semester);
+            //function disableFunction();
+            enableSubmit(); //enable the save button if inputs are valid
          }
     }
-
 }
+</script>
+<form    name="regform" id = reg_form  action="" METHOD="POST">
+  <input type="text"    name = "studentbox"  class = "required"   id = "studentid" >
+  <input type="text"    name = "classbox"    class = "required"   id = "classid" >
+  <input type="text"    name = "semesterbox" class = "required"   id = "semester">
+
+  <input disabled id = submitbtn type="submit">
+</form>
+
+
+<script>
+function disableFunction() {
+  document.getElementById("save").disabled = false;
+  }
 </script>
 
 </body>
+
+<script>
+    //check that all 3 hidden inputs are valid
+    function enableSubmit(){
+      let inputs = document.getElementsByClassName('required');
+      //let btn = document.querySelector('input[type="submit"]');
+      var btn = document.getElementById("submit");
+      let isValid = true;
+      for (var i = 0; i < inputs.length; i++){
+      let changedInput = inputs[i];
+      if (changedInput.value.trim() === "" || changedInput.value === null){
+        isValid = false;
+      break;
+      }
+    }
+    document.getElementById("submitbtn").removeAttribute("disabled");
+
+  }
+</script>
+
+
+<script>
+  // Thanks to Tim
+  // Add a handler for the form's "submit" event
+  document.getElementById("reg_form").addEventListener("submit", (event) => {
+    // The default behavior of form submission is to navigate, but since we're taking care of everything client-side let's prevent that
+    event.preventDefault();
+    const formElement = event.target;
+    fetch("/api/registration", {  //parens fetch
+      method: "POST",
+
+      headers: {
+        "content-type": "application/json",
+      },
+
+      body: JSON.stringify({  //parens pody
+        registration: {
+          student_id: formElement.elements["studentbox"].value,
+          class_id:   formElement.elements["classbox"].value,
+          semester:   formElement.elements["semesterbox"].value,
+        }
+      }) //end parens body
+
+    }).then((response) => {   //end addEventListener
+      if (!response.ok) {
+        throw new Error(`Bad request: ${response.status} ${response.statusText}`);
+      }
+
+      return response.json();
+    }).then((responsePayload) => {
+      alert("Successfully created registration");
+
+      // Note the person object is nested under the `data` property
+      console.log(responsePayload.data);
+
+      // TODO: Now what? Should we navigate the user away from the form?
+      // Should we reset the form and let them continue to create another user?
+
+      formElement.reset();
+    }).catch((error) => {
+      alert("ERROR creating registration");
+
+      console.log(error);
+    });
+  });
+</script>
+
+
+</body>
 </html>
- 

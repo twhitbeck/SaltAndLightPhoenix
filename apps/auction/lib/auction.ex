@@ -13,6 +13,16 @@ defmodule Auction do
     |> Map.drop([:__meta__])
   end
 
+  ########################################
+  # map string key to map atom key       #
+  ########################################
+  def key_to_atom(string_map) do
+    for {key, val} <- string_map, into: %{}
+      do
+        {String.to_atom(key), val}
+     end
+  end
+
   ################################################################
   # User functions  - for users on Phoenix side of umbrella      #
   ################################################################
@@ -146,6 +156,7 @@ defmodule Auction do
 
   #################################################################
   # Student functions  - for students on Phoenix side of umbrella #
+  # alias for Student.changeset - Auction.Student.changeset       #
   #################################################################
 
   #  Student.changeset(%Student{})   # Return a blank changeset
@@ -163,7 +174,9 @@ defmodule Auction do
   # the primary key matches the given student id
   # returns a map
   def get_student(id) do
+    IO.puts("get_student(id)")
     @repo.get!(Student, id)
+    |> IO.inspect()
   end
 
   # Given user id return all students belonging to the user
@@ -189,8 +202,10 @@ defmodule Auction do
   # show all students for one user - getting user profile instead ERROR
   def show_students(id) do
     Auction.get_student_profile(id)
-
+    |> IO.inspect()
+    IO.puts("SHOW STUDENTS")
     Auction.get_user(id)
+    |> IO.inspect()
     # as a struct containing a list of structs - students:
     |> @repo.preload(:students)
     # a list of changesets
@@ -200,7 +215,11 @@ defmodule Auction do
   end
 
   def make_changeset(map) do
+    IO.puts("make_changeset")
+    IO.inspect(map)
+    IO.puts("student changeset")
     Student.changeset(map)
+    |> IO.inspect()
   end
 
   def show_students_changesets(maplist) do
@@ -220,6 +239,7 @@ defmodule Auction do
   end
 
   def edit_student(id) do
+    IO.puts("get student")
     get_student(id)
     |> Student.changeset()
   end
@@ -279,20 +299,31 @@ defmodule Auction do
 
   ######################################################################
   # registration functions  - for students on Phoenix side of umbrella #
+  # alias for Registration.changeset - Auction.Registration.changeset  #
   ######################################################################
 
-  #  Registration.changeset(%Registration{})   # Return a blank changeset
-  def new_registration, do: Registration.changeset(%Registration{})
+  #  Registration.changeset(%Registration{})   # Return a blank changeset an empty map
+  def blank_new_registration() do
+    IO.puts("Auction new registration")
+   # IO.inspect(params)
+    %Registration{}
+    # should return a change set with changes containing data
+    # studentID needs to be in a
+     |> Registration.changeset()
+    |> IO.inspect()
+
+    # Registration.changeset(%Registration{})
+  end
 
   def create_registration(params) do
-    IO.puts("registration parameters")
-    IO.inspect(params)
-    # Auction.Student
-    %Registration{}
+     %Registration{}
+    |> IO.inspect()
     # should return a change set with changes containing data
     |> Registration.changeset(params)
     |> @repo.insert()
-    |> @repo.preload([:classtitle, :period, :section, :teacher, :helper1, :helper2])
+    |> IO.inspect()
+    IO.puts("Done Insert")
+    # |> @repo.preload([:classtitle, :period, :section, :teacher, :helper1, :helper2])
   end
 
   # Fetches the student id associated with registration id
@@ -444,7 +475,7 @@ defmodule Auction do
   end
 
   def show_class(id) do
-    #query =
+    # query =
     from(Class, order_by: [:description])
     # looks like a changeset
     get_class(id)
@@ -477,8 +508,8 @@ defmodule Auction do
   def get_classtitles() do
     query = from(Classtitle, order_by: [:description], select: [:id, :description])
     # query = from(Classtitle, select: [:description])
-    list = Repo.all(query)
-    for x <- list, do: [to_string(x.id) <> " " <> x.description]
+    Repo.all(query)
+    # for x <- list, do: to_string(x.id) <> " " <> x.description
   end
 
   def list_class_data(classid, semester) do
@@ -492,7 +523,7 @@ defmodule Auction do
     teachername = Auction.get_teacher_name(regdata.teacher.id)
     helper1name = Auction.get_teacher_name(regdata.helper1.id)
     helper2name = Auction.get_teacher_name(regdata.helper2.id)
-    #list =
+    # list =
     [
       classid,
       classtitle,

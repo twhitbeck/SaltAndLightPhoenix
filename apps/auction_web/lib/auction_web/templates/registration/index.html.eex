@@ -1,56 +1,52 @@
-
 <html>
-
+<!-- Available assigns: [:class_params, :classes, :conn, :current_user, :firstname, :lastname, :student_id, :titlelist] -->
 <body>
+
 <p>
   <strong><%= @firstname %> <%= @lastname %></strong>
-  <% classes_length = length(@classes) - 1 %>
-</p>
+<p id="demo">
+<!--reference name or manipulate id -->
+
+<script>
+function getCurrentURL () {
+  localStorage.setItem("regIndex",window.location.href );
+}
+</script
 
 <% # make a drop down list of titles %>
 <% # purpose is to display all classes for a title %>
-<%= IO.inspect(@student_id) %>
-<!--reference name or manipulate id -->
-
-
-<center>
 
 <label for="title">Choose your class title from the list:</label>
 <button onclick="history.go(0)">clear</button>
-  <input type="text" name = gettitles list="titles"}/>
-  <!-- build a data list of titles using a loop -->
-  <datalist id="titles">
-  <%= for i <- 0..Enum.count(@titlelist)-1 do %> 
-    <option value="<%= Enum.at(@titlelist,i) %>">
-  <% end %> 
 
-</datalist>
-  <span id="spanresult"></span>
+  <select id="classtitles-select">
+  <option value="<%= 0 %>"><%= "" %></option>
+  <%= for classtitle <- @titlelist do %>
+    <option value="<%= classtitle.id %>"><%= classtitle.description %></option>
+  <% end %>
+  </select>
 
   <script>
-    let features =  'scrollbars=yes","resizable=yes,top=200,left=400,width=1200,height=700 menubar=yes,location=yes,status=no';
-    var getvalue=document.getElementsByName('gettitles')[0];
+    let studentidAssigns = <%=@student_id %> //trick to get an assigns into a javascript variable
+    localStorage.setItem("studentID", studentidAssigns);
+    const classtitlesSelect = document.getElementById("classtitles-select");
+    getCurrentURL();
+    classtitlesSelect.addEventListener("change", (event) => {
+      window.location.href = "/classes/" + event.target.value;
+    })
 
-    getvalue.addEventListener('input', function()
-    { console.log("registration index function")
-      var classtitle = this.value;
-      console.log("This.value");
-      document.getElementById("spanresult").innerHTML="Select value is : "+this.value;
-      console.log(classtitle)
-      const titleArray = classtitle.split(" ");
-      var titleid=titleArray[0];
-     // console.log(titleid)
-     //render SprawlWeb.SharedView, "show.html",@student_id
-     //IO.puts("render shared");
-     sessionStorage.setItem('student_id', 30)
-    
-      window.open("http://localhost:4000/classes/"+titleid, features);
-    });
-</script> 
-
-<span id = "spanresult"></span>
-</center>
-
+    //var getvalue=document.getElementsByName('gettitles')[0];
+    //getvalue.addEventListener('input', function()
+    //{ var classtitle = this.value;
+    //  console.log("This.value");
+    //  document.getElementById("spanresult").innerHTML="Select value is : "+this.value;
+    //  console.log(classtitle)
+    //  const titleArray = classtitle.split(" ");
+    //  var titleid=titleArray[0];
+    //  classTitleWindow = window.location.href = "/classes/"+titleid;
+    // // classTitleWindow["studentID"] = studentidAssigns;
+    //});
+</script>
 
 </ul>
 
@@ -69,7 +65,7 @@ th, td {
 }
 </style>
 
-  <table <table id="classTable" class="table-layout">
+ <table id="classTable" class="table-layout">
     <tr  onclick="(this)">
       <th>ClassID </th>
       <th>Class title</th>
@@ -80,21 +76,21 @@ th, td {
       <th>Teacher</th>
       <th>Helper1</th>
       <th>Helper2</th>
-    </tr>  
+    </tr>
 
 
-    <%= for {class, i} <- Enum.with_index(@classes,0) do%>
-      <%= for {item, k} <- Enum.with_index(class,0) do%>
+    <%= for {class, _i} <- Enum.with_index(@classes,0) do%>
+      <%= for {item, _k} <- Enum.with_index(class,0) do%>
         <td> &nbsp;  <%= item %> </td>
       <% end %>
 
-      </tr> 
+      </tr>
     <% end %>
   </table>
 
 <script>
 highlight_row();
-<% IO.puts("Registration index.html") %>
+
 function highlight_row() {
   console.log("INDEX")
     var table = document.getElementById('classTable');
@@ -116,15 +112,20 @@ function highlight_row() {
             rowSelected.className += " selected";
 
             let classID = rowSelected.cells[0].innerHTML;
-            let text = classID[0].toString();
-         
-          
+            const temp = classID.trim().split(/\s+/);
+            console.log(temp[1])
+            let text = temp[1].toString();
+            console.log(text)
+            console.log("done highlight index row")
+
          }
     }
 
 }
 </script>
 <span><%= link "Back", to: Routes.student_path(@conn, :index) %></span>
+<span><%= link "New Registration", to: Routes.student_registration_path(@conn, :new, @student_id) %></span>
+<span><%=# link "New Registration", to: Routes.student_registration_path(@conn, :new) %></span>
 
 
 

@@ -10,6 +10,7 @@ defmodule AuctionWeb.MixProject do
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.12",
+      json: "~> 1.4",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -38,12 +39,14 @@ defmodule AuctionWeb.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.6.6"},
+      {:phoenix, "~> 1.6.14"},
+      {:phoenix_ecto, "~> 4.4.0"},
+      {:ecto_sql, "~> 3.6"},
+      {:postgrex, ">= 0.0.0"},
       {:phoenix_pubsub, "~> 2.0.0"},
       {:phoenix_html, "~> 3.2.0"},
       {:phoenix_live_reload, "~> 1.3.3", only: :dev},
       {:phoenix_live_view, "~> 0.17.7"},
-      {:phoenix_ecto, "~> 4.4.0"},
       {:floki, ">= 0.32.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.6.5"},
       {:esbuild, "~> 0.4.0", runtime: Mix.env() == :dev},

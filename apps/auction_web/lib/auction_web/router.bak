@@ -7,13 +7,13 @@ defmodule AuctionWeb.Router do
   @options [:show, :new, :create, :edit, :update, :delete, :index]
   @roptions [:show, :new, :create, :delete, :index]
   @coptions [:show, :new, :create, :delete, :index]
+  @rcoptions [:create]
 
   # pass conn thru from first defined to last defined
   pipeline :browser do
     plug(:accepts, ["html", "json"])
     plug(:fetch_session)
     plug(:fetch_live_flash)
-    plug(:fetch_flash)
     plug(:put_root_layout, {AuctionWeb.LayoutView, :root})
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
@@ -41,18 +41,17 @@ defmodule AuctionWeb.Router do
     # iex(3)> AuctionWeb.Router.Helpers.user_student_path(AuctionWeb.Endpoint, :show,1,1)
 
     get("/", PageController, :index)
-    # get("/redirect_test", PageController, :redirect_test)
-    # get("/new_registration", RegistrationController, :new)
+    get("/redirect_test", PageController, :redirect_test)
     resources("/users", UserController, only: [:show, :new, :create])
     resources("/profiles", ProfileController, singleton: true)
-    # resources("/registrations", RegistrationController, only: @roptions)
+    resources("/registrations", RegistrationController, only: @roptions)
 
     resources "/classes", ClassController, only: @roptions do
-      forward("/profile", Plugs.ProfileRedirector)
+      get("/redirect_test", ClassController, :redirect_test)
 
-      #resources "/students", StudentController, only: [:index, :new, :create] do
-     #   resources("/registrations", RegistrationController, only: [:index, :create, :new])
-     # end
+      resources "/students", StudentController, only: [:index, :new, :create] do
+        resources("/registrations", RegistrationController, only: [:index, :create, :new])
+      end
     end
 
     #  student_class_path and student_registration_path nested resources
@@ -72,12 +71,6 @@ defmodule AuctionWeb.Router do
     post("/login", SessionController, :create)
 
     # live_dashboard "/dashboard", metrics: AuctionWeb.Telemetry
-  end
-
-  scope "/api", AuctionWeb do
-    pipe_through(:api)
-
-    resources("/registration", RegistrationController)
   end
 
   # Enables the Swoosh mailbox preview in development.

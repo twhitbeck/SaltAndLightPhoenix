@@ -2,5 +2,5 @@
 <% IO.puts("new student template") %>
 <% IO.inspect(@student) %>
 <%= render("form.html", student: @student, action: Routes.student_path(@conn,:create), conn: @conn) %>
- <! –– assigns - [:conn, :current_user, :profile] ––> 
- <! –– from Map.keys(assigns) ––> 
+ <! –– assigns - [:conn, :current_user, :profile] ––>
+ <! –– from Map.keys(assigns) ––>
