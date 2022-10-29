@@ -39,26 +39,18 @@ defmodule AuctionWeb.StudentController do
   # %{"id" => id} pattern match - id must match string "id"    #
   ##############################################################
   def show(conn, %{"id" => id}) do
-    IO.puts("SHOW ID")
-    IO.inspect(id)
     current_user = Map.get(conn.assigns, :current_user)
     userid = current_user.id
     lastname = Auction.get_user_lastname(userid)
     # student is a changeset
-    student =
-      Auction.show_student(id)
-      |> IO.inspect()
+    student = Auction.show_student(id)
 
     # actual id in student table
     student_id = student.data.id
     reg_list = Auction.get_registration_by_one(student_id)
     reg_map = Enum.at(reg_list, 0)
 
-    registration_id =
-      reg_map.id
-      |> IO.inspect()
-
-    IO.puts("student reg id")
+    registration_id = reg_map.id
     # assign student to @student and student_id to @student_id and lastname to @lastname
     conn
     |> assign(:student, student)
@@ -137,8 +129,6 @@ defmodule AuctionWeb.StudentController do
     userid = current_user.id
     student = Auction.get_student(userid)
     student_id = student.data.id
-    IO.puts("inspect student id")
-    IO.inspect(student_id)
     firstname = student.data.firstname
     lastname = Auction.get_student_profile(userid)
     lastname = lastname.data.lastname

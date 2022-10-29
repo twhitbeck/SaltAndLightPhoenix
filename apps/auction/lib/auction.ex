@@ -67,7 +67,6 @@ defmodule Auction do
     end
 
     # Repo.get!(Profile, id).lastname
-    # |> IO.inspect()
   end
 
   #################################################################
@@ -174,9 +173,7 @@ defmodule Auction do
   # the primary key matches the given student id
   # returns a map
   def get_student(id) do
-    IO.puts("get_student(id)")
     @repo.get!(Student, id)
-    |> IO.inspect()
   end
 
   # Given user id return all students belonging to the user
@@ -202,24 +199,17 @@ defmodule Auction do
   # show all students for one user - getting user profile instead ERROR
   def show_students(id) do
     Auction.get_student_profile(id)
-    |> IO.inspect()
-    IO.puts("SHOW STUDENTS")
     Auction.get_user(id)
-    |> IO.inspect()
     # as a struct containing a list of structs - students:
     |> @repo.preload(:students)
     # a list of changesets
     |> show_students_changesets()
 
-    # Enum.each(Auction.get_user(id),&IO.inspect/1)
-  end
+   end
 
   def make_changeset(map) do
-    IO.puts("make_changeset")
-    IO.inspect(map)
     IO.puts("student changeset")
     Student.changeset(map)
-    |> IO.inspect()
   end
 
   def show_students_changesets(maplist) do
@@ -287,10 +277,6 @@ defmodule Auction do
     # If there exists a student - nilstudent will be a list of student structs
     # nilstudents = Repo.preload(user,:students).students
     |> Repo.preload([:profiles, :students])
-
-    # |> IO.inspect()
-    # IO.puts("LAST NAME")
-    # IO.inspect(nilstudents.profiles.lastname)
     # case nilstudents.profiles.lastname do
     #  nil -> nil #check_nil()
     #  _ -> #show_students(id)
@@ -304,25 +290,20 @@ defmodule Auction do
 
   #  Registration.changeset(%Registration{})   # Return a blank changeset an empty map
   def blank_new_registration() do
-    IO.puts("Auction new registration")
-   # IO.inspect(params)
     %Registration{}
     # should return a change set with changes containing data
     # studentID needs to be in a
      |> Registration.changeset()
-    |> IO.inspect()
 
     # Registration.changeset(%Registration{})
   end
 
   def create_registration(params) do
      %Registration{}
-    |> IO.inspect()
     # should return a change set with changes containing data
     |> Registration.changeset(params)
     |> @repo.insert()
     |> IO.inspect()
-    IO.puts("Done Insert")
     # |> @repo.preload([:classtitle, :period, :section, :teacher, :helper1, :helper2])
   end
 
@@ -387,10 +368,12 @@ defmodule Auction do
   ####################################
   # id is student primary key id
   def get_registration_by_one(student_id) do
+    IO.puts("Get reg by one")
     Registration
     |> where([r], r.student_id == ^student_id)
     |> limit(1)
     |> @repo.all
+    #|> List.first(1)
   end
 
   # alternate syntax
@@ -399,19 +382,27 @@ defmodule Auction do
   #  Repo.all(query)
   # end
 
-  def get_registration_by(attrs) do
-    @repo.get_by(Registration, attrs)
+  def get_registration_by_three(student_id, class_id, semester) do
+    Registration
+    |> where([r], r.student_id == ^student_id and r.class_id ==^class_id and r.semester == ^semester)
+    |> @repo.all
   end
 
-  def delete_registration(%Auction.Registration{} = registration), do: @repo.delete(registration)
-
-  # def get_registrations(student_id) do #Get all registrations for one student - alternate method
-  #   query = from(Registration, where: [student_id: ^students_id], select: [:registration_id])
-  #   Repo.all(query)  #brings back list of structs
-  # end
-
-  # stuff = Student.changeset(%Student{}, studentparams)
-  # check if there are students
+  ################################################################################################
+  # Why do we need select?                                                                       #
+  # 08:55:21.281 [debug] QUERY OK source="registrations" db=5.9ms queue=0.4ms idle=1455.0ms  RED #
+  # DELETE FROM "registrations" AS r0 WHERE (r0."id" = 151) RETURNING r0."student_id" []     RED #
+  # {1, [30]} - returns student_id in a list enclosed in a tuple  list of structs                #
+  ################################################################################################
+  def delete_registration(register_id) do
+    Registration
+      |> where([r], r.id == ^register_id)
+      |> @repo.delete_all()
+  #|> List.first(1)
+end
+   # query = from(Student, where: [user_id: ^userid], select: [:id])
+    #query = from (Registrations", where: r.id == 151, select: r.student_id
+   # |> @repo.delete(all)
 
   def get_fee(semester, fallfee, springfee) do
     cond do
@@ -554,7 +545,6 @@ defmodule Auction do
 
   def testlist([[title, section, period, fee, semester, name, helper1, helper2] | tail]) do
     [[title, section, period, fee, semester, name, helper1, helper2] | testlist(tail)]
-    |> IO.inspect()
 
     IO.puts("REcursion")
   end

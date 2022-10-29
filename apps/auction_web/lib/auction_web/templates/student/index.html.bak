@@ -1,8 +1,4 @@
 <ul>
-     <% IO.inspect(@students) %>
-    <%= for student <- @students do %>
-    <% IO.puts("student in index") %>
-     <% IO.inspect(student.firstname) %>
     <strong><%= link("select", to: Routes.student_path(@conn, :show, student))%></strong>
     <li> <%= student.firstname%> <%= @lastname %></li>
   <% end %>

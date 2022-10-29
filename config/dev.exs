@@ -16,6 +16,7 @@ config :auction_web, AuctionWeb.Endpoint,
   secret_key_base: "3h80Q3SHJ2aMJOKgOY+pHl95E1yXTmLAlAS47Su7CnM841ZUi1Lxk6DRhGup4TXk",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
+    #tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
   ]
 

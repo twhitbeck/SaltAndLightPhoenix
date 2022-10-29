@@ -1,7 +1,5 @@
 <%# require IEx; IEx.pry() %>
 <h2>Student data for <%= @lastname %> </h2>
-<% IO.inspect(@registration_id) %>
-<% IO.puts("DID @registration_id show up") %>
  
 <%=# form_for @student, Routes.student_path(@conn, :show ,@student.data), fn f -> %>
  <style>
@@ -22,7 +20,5 @@ table, th, td {
       <td><%=  @student.data.birthday %></td>
     </tr>
   </table>
- <%= IO.puts("STUDENT TEMPLATE SHOW") %>
-  <%= IO.puts(@student.data.firstname) %>
 
 <%# end %> 

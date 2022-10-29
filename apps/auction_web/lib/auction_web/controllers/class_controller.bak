@@ -49,15 +49,11 @@ defmodule AuctionWeb.ClassController do
     class = Auction.show_class(id)   # changeset
     class_id = class.data.id
     # assign student to @student and student_id to @student_id
-    IO.puts("SHOW CLASS")
-    IO.inspect(id)
     render(conn, "show.html", class: class, class_id: class_id, # use a different layout than app
       layout: {AuctionWeb.LayoutView, "showclass.html"})
   end
 
   def edit(conn, %{"id" => id}) do #_ \\ %{}) do #%{"id" => id}) do #%{"id" => id}) do
-    IO.puts("EDIT CLASS ID")
-    IO.inspect(id)
     current_user = Map.get(conn.assigns, :current_user)
     userid=current_user.id                # get user id - links to user table
     class = Auction.show_class(id)    # get student changeset by student.id  - firstname, grade, birthday
@@ -75,8 +71,6 @@ defmodule AuctionWeb.ClassController do
     userid=current_user.id
     student = Auction.get_student(userid)
     student_id = student.data.id
-    IO.puts("inspect student id")
-    IO.inspect(student_id)
     firstname = student.data.firstname
     lastname = Auction.get_student_profile(userid)
     lastname = lastname.data.lastname

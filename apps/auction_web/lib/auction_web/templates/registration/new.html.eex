@@ -24,4 +24,3 @@ function testResults (form) {
    form.inputbox2.value = semesterid;
 }
 </SCRIPT>
-  <%=# IO.inspect(@conn) %>

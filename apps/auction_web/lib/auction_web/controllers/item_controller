@@ -25,7 +25,6 @@ defmodule AuctionWeb.ItemController do
 
   def create(conn, %{"item" => item_params}) do
     IO.puts("create")
-    IO.inspect(item_params)
     case Auction.insert_item(item_params) do
       {:ok, item} -> redirect(conn, to: Routes.item_path(conn, :show, item))
       {:error, item} -> render(conn, "new.html", item: item)
@@ -34,7 +33,6 @@ defmodule AuctionWeb.ItemController do
 
   def edit(conn, %{"id" => id}) do
     item = Auction.edit_item(id)
-    IO.inspect(item)
     render(conn, "edit.html", item: item)
   end
 

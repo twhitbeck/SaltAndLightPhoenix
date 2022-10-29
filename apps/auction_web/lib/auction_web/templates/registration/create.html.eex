@@ -1,3 +1,0 @@
-<h1>Class create data</h1>
-<% # @student_ID appears to be a place holder only %>
- <% IO.puts("How did we get to registration/create html?") %>

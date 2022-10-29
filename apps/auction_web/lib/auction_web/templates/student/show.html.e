@@ -9,7 +9,4 @@
  <li><strong>firstname:</strong> <%= @student.firstname %></li>
 </ul>
 
-<% IO.puts("show for students") %>
-<% IO.inspect(Routes.student_path(@conn,:show)) %>
-<% IO.puts("inspected") %>
 <%= render("form.html", student: @student, action: Routes.student_path(@conn,:show), conn: @conn) %>

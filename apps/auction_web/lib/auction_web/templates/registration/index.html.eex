@@ -4,10 +4,9 @@
 <p>
   <strong><%= @firstname %> <%= @lastname %></strong>
 <p id="demo">
-<!--reference name or manipulate id -->
-
+<!--crsf token is usually provided by a form - however there is no form - add our own -->
+<%= csrf_meta_tag() %>
 </head>
-
 
 <script>
 function getCurrentURL () {
@@ -20,7 +19,6 @@ function getCurrentURL () {
 
 <label for="title">Choose your class title from the list:</label>
 <p></p>
-
 
   <select id="classtitles-select">
   <option value="<%= 0 %>"><%= "" %></option>
@@ -37,18 +35,6 @@ function getCurrentURL () {
     classtitlesSelect.addEventListener("change", (event) => {
       window.location.href = "/classes/" + event.target.value;
     })
-
-    //var getvalue=document.getElementsByName('gettitles')[0];
-    //getvalue.addEventListener('input', function()
-    //{ var classtitle = this.value;
-    //  console.log("This.value");
-    //  document.getElementById("spanresult").innerHTML="Select value is : "+this.value;
-    //  console.log(classtitle)
-    //  const titleArray = classtitle.split(" ");
-    //  var titleid=titleArray[0];
-    //  classTitleWindow = window.location.href = "/classes/"+titleid;
-    // // classTitleWindow["studentID"] = studentidAssigns;
-    //});
 </script>
 
 </ul>
@@ -90,12 +76,51 @@ th, td {
       </tr>
     <% end %>
   </table>
+<input id =  "cancelbtn" type = "button" onclick = "hideCancel()"  value = "Cancel">
+<input id =  "deletebtn" type = "button" onclick = "hideDelete()"  value = "Delete Yellow">
+
+<script>
+   document.getElementById("cancelbtn").style.visibility = 'hidden';
+   document.getElementById("deletebtn").style.visibility = 'hidden';
+
+</script>
+
+
+<script>
+  var hideCancel = function(){
+        document.getElementById("cancelbtn").style.visibility = 'hidden';
+        document.getElementById("deletebtn").style.visibility = 'hidden';
+        unHighlightRows();
+  };
+</script>
+
+<script>
+  var hideDelete = function(){
+        document.getElementById("deletebtn").style.visibility = 'hidden';
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        alert(token);
+        fetch('/api/registrations/89', {
+          method: 'delete',
+          headers: {
+         'Content-Type': 'application/json',
+         'X-CSRF-Token': token
+        },
+
+        body: JSON.stringify({  //start stringify
+          registration: { //start registration
+            id: "89",
+
+          }  // end registration
+        }) //end stringify
+  })
+};
+</script>
+
 
 <script>
 highlight_row();
 
 function highlight_row() {
-  console.log("INDEX")
     var table = document.getElementById('classTable');
     var cells = table.getElementsByTagName('td');
     for (var i = 0; i < cells.length; i++) {
@@ -113,19 +138,38 @@ function highlight_row() {
             var rowSelected = table.getElementsByTagName('tr')[rowId];
             rowSelected.style.backgroundColor = "yellow";
             rowSelected.className += " selected";
-
             let classID = rowSelected.cells[0].innerHTML;
             const temp = classID.trim().split(/\s+/);
             console.log(temp[1])
             let text = temp[1].toString();
-            console.log(text)
-            console.log("done highlight index row")
-
+            document.getElementById("cancelbtn").style.visibility = 'visible';
+            document.getElementById("deletebtn").style.visibility = 'visible';
          }
     }
 
 }
 </script>
+
+<script>
+var unHighlightRows = function(){
+    var table = document.getElementById('classTable');
+    var cells = table.getElementsByTagName('td');
+    for (var i = 0; i < cells.length; i++) {
+         var cell = cells[i];
+            var rowId = table.rowIndex;
+            var rowsNotSelected = table.getElementsByTagName('tr');
+            for (var row = 0; row < rowsNotSelected.length; row++) {
+                rowsNotSelected[row].style.backgroundColor = "";
+                rowsNotSelected[row].classList.remove('selected');
+            }
+    }
+}
+</script>
+
+<script>
+
+</script>
+
 <span><%=# link "Back", to: Routes.student_path(@conn, :index) %></span>
 <span><%=# link "New Registration", to: Routes.student_registration_path(@conn, :new, @student_id) %></span>
 <span><%=# link "New Registration", to: Routes.student_registration_path(@conn, :new) %></span>

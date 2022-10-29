@@ -1,8 +1,5 @@
 <%= form_for @student, @action, fn f -> %>
-<% IO.puts("student action") %>
-<% IO.inspect(@action) %>
-<% IO.puts("@student dot action") %>
-<% IO.inspect(@student.action) %>
+
   <%= if @student.action do %>
     <div class="alert alert-danger">
       There are errors in your submission.
@@ -11,11 +8,11 @@
   <% end %>
 
   <%=# @action %>
-  
+
   <%= label f,      "First Name" %>
   <%= error_tag f,  :firstname  %>
   <%= text_input f, :firstname  %>
-  
+
   <%= label f,      "Grade"  %>
   <%= error_tag f,  :grade %>
   <%= text_input f, :grade %>
@@ -23,8 +20,8 @@
   <%= label f,      "Birthday" %>
   <%= error_tag f,  :birthday %>
   <%= date_input f, :birthday %>
-  
-  
+
+
   <div>
     <%= submit "Submit" %>
   </div>

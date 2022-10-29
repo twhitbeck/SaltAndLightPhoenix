@@ -1,9 +1,15 @@
 defmodule AuctionWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :auction_web
 
-  #**************************************************************
-  # If you want something to happen on ALL requests, do it here *
-  #**************************************************************
+  # SEE: https://blog.logrocket.com/build-rest-api-elixir-phoenix/
+
+  # **************************************************************
+  # If you want something to happen on ALL requests, do it here  *
+  #                                                              *
+  # NOTE: Phoenix recieves a request at the endpoint             *
+  # AND endpoint converts the request into a conn structure      *
+  # endpoint then forwards the conn to the router                *
+  # **************************************************************
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -48,6 +54,7 @@ defmodule AuctionWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug AuctionWeb.Router                # last plug delegate all further processing
-                                        #  to router
+  # last plug delegate all further processing
+  plug AuctionWeb.Router
+  #  to router
 end

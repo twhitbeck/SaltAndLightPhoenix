@@ -8,9 +8,6 @@ defmodule AuctionWeb.FallbackController do
 
   # This clause handles errors returned by Ecto's insert/update/delete.
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
-    IO.puts("Fallback")
-    IO.inspect(changeset)
-
     conn
     |> put_status(:unprocessable_entity)
     |> put_view(AuctionWeb.ChangesetView)

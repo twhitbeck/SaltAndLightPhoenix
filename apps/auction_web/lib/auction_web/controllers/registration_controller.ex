@@ -59,7 +59,6 @@ defmodule AuctionWeb.RegistrationController do
 
     # atom_params =
     #  Auction.key_to_atom(params)
-    #  |> IO.inspect()
 
     # student_id = atom_params[:student_id]
 
@@ -68,18 +67,12 @@ defmodule AuctionWeb.RegistrationController do
 
     registration = Auction.Registration.changeset(%Registration{}, map)
 
-    # IO.inspect(map)
-    # %{student_id : 30}
-
     # ex: %{"student_id" => "30"}
     #
     # a blank changeset obtained thru auction.ex - auction/registration.ex
     # registration = Auction.new_registration(params)
     # O.inspect(student_id)
     I
-    # IO.inspect(firstname)
-    # IO.inspect(lastname)
-    # IO.inspect(registration)
 
     # conn
     # |> assign(:student_id, student_id)
@@ -113,15 +106,14 @@ defmodule AuctionWeb.RegistrationController do
   # Need only - (1) student_id, (2) class_id , (3) semester             #
   #######################################################################
   def create(conn, %{"registration" => registration_params}) do
-    IO.puts("Create registration")
-    # %{"class_id" => "39", "semester" => "1", "student_id" => "30"}
-    IO.inspect(registration_params)
+    IO.inspect(%{"registration" => registration_params})
+    student = Map.get(registration_params, "student_id")
 
     case Auction.create_registration(registration_params) do
       {:ok, registration} ->
         conn
         # |> put_flash(:info, "Registration created successfully.")
-        |> redirect(to: Routes.student_registration_path(conn, :index, registration))
+        |> redirect(to: Routes.student_registration_path(conn, :index, student))
 
       {:error, registration} ->
         render(conn, "new.html", registration: registration)
@@ -134,6 +126,8 @@ defmodule AuctionWeb.RegistrationController do
   # student id
   def index(conn, %{"student_id" => student_id} = params) do
     # EX: %{"classtitle" => "Chess & Games", "student_id" => "30"}
+    IO.puts("index first name")
+    IO.inspect(params)
     firstname = Auction.get_student(student_id).firstname
     current_user = Map.get(conn.assigns, :current_user)
     userid = current_user.id
@@ -146,10 +140,8 @@ defmodule AuctionWeb.RegistrationController do
     ##################################
     classes = Enum.map(regs, fn x -> Auction.list_class_data(x.class_id, x.semester) end)
     classtitle = params["classtitle"]
-    # |> IO.inspect()
 
     classtitlelist = Auction.get_classtitles()
-    # |> IO.inspect()
 
     conn
     |> assign(:class_params, params)
@@ -166,36 +158,36 @@ defmodule AuctionWeb.RegistrationController do
 
   # registration id
   def show(conn, %{"id" => id}) do
-    IO.puts("SHOW ID")
+    current_user = Map.get(conn.assigns, :current_user)
+    IO.puts("show  no api registrations")
+    IO.inspect(current_user)
     student_id = Auction.get_student_id_from_registration(id)
 
+    student = Auction.get_student(student_id)
+    user_id = Map.get(student, :user_id)
     regdata = Auction.get_class_from_registration(id)
-    # |> IO.inspect()
 
-    reg_list = Auction.get_registration_by_one(id)
-    reg_map = Enum.at(reg_list, 0)
+    reg_list =
+      Auction.get_registration_by_one(student_id)
+      |> IO.inspect()
 
-    registration_id = reg_map.id
-    # |> IO.inspect()
+    # registration_id = reg_list.id
 
     IO.puts("shos reg id")
-    classtitle = regdata.class.classtitle.description
+    classtitle = regdata.classtitle.description
     semester = regdata.semester
-    fallfee = regdata.class.fallfee
-    springfee = regdata.class.springfee
+    fallfee = regdata.fallfee
+    springfee = regdata.springfee
     fee = Auction.get_fee(semester, fallfee, springfee)
-    section = regdata.class.section.description
-    period = regdata.class.period.time
-    teachername = Auction.get_teacher_name(regdata.class.teacher.id)
-    helper1name = Auction.get_teacher_name(regdata.class.helper1.id)
-    helper2name = Auction.get_teacher_name(regdata.class.helper2.id)
+    section = regdata.section.description
+    period = regdata.period.time
+    teachername = Auction.get_teacher_name(regdata.teacher.id)
+    helper1name = Auction.get_teacher_name(regdata.helper1.id)
+    helper2name = Auction.get_teacher_name(regdata.helper2.id)
 
-    current_user = Map.get(conn.assigns, :current_user)
-    userid = current_user.id
-    lastname = Auction.get_user_lastname(userid)
+    lastname = Auction.get_user_lastname(user_id)
     # student is a changeset
     student = Auction.show_student(student_id)
-    IO.inspect(student.data)
     firstname = student.data.firstname
     student_name = Enum.join([firstname, lastname], " ")
 
@@ -204,7 +196,7 @@ defmodule AuctionWeb.RegistrationController do
     |> assign(:student_name, student_name)
     |> assign(:student, student)
     |> assign(:student_id, student_id)
-    |> assign(:registration_id, registration_id)
+    # |> assign(:registration_id, registration_id)
     |> assign(:classtitle, classtitle)
     |> assign(:semester, semester)
     |> assign(:section, section)
@@ -214,6 +206,15 @@ defmodule AuctionWeb.RegistrationController do
 
     # render(conn, "show.html", %{student: student, student_id: student_id, lastname: lastname,
     #  layout: {AuctionWeb.LayoutView, "showstudent.html"}})  # use a different layout than app
+  end
+
+  def delete(conn, %{"id" => id}) do
+    # id is the registration id
+    Auction.delete_registration(id)
+
+    conn
+    |> put_flash(:info, "Class registration deleted successfully.")
+    |> redirect(to: Routes.student_registration_path(conn, :index))
   end
 
   # Pattern match to determine that there is no current user

@@ -1,8 +1,5 @@
 <%= form_for @student, @action, fn f -> %>
-<% IO.puts("student action") %>
-<% IO.inspect(@action) %>
-<% IO.puts("@student dot action") %>
-<% IO.inspect(@student.action) %>
+
   <%= if @student.action do %>
     <div class="alert alert-danger">
       There are errors in your submission.

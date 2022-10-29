@@ -13,21 +13,6 @@ defmodule AuctionWeb.ClassController do
     render(conn, "new.html", class: class)
   end
 
-  def create(conn, %{"registration" => registration_params}) do
-    IO.puts("Create registration")
-    # IO.inspect(registration_params)
-
-    case Auction.create_registration(registration_params) do
-      {:ok, registration} ->
-        conn
-        # |> put_flash(:info, "Registration created successfully.")
-        |> redirect(to: Routes.student_registration_path(:index, registration))
-
-      {:error, registration} ->
-        render(conn, "new.html", registration: registration)
-    end
-  end
-
   def index(conn, %{"classtitle_id" => classtitle_id}) do
     IO.puts("MADE IT TO INDEX")
     class = Auction.get_class_from_title(classtitle_id)
@@ -41,6 +26,7 @@ defmodule AuctionWeb.ClassController do
     # layout: {AuctionWeb.LayoutView, "indexstudent.html"})
   end
 
+  @spec package_classes_data(any) :: nil
   def package_classes_data(classtitle_id) do
     # classdata =       Auction.get_class_from_classid(classid)
     # classtitle =      regdata.classtitle.description
@@ -80,8 +66,6 @@ defmodule AuctionWeb.ClassController do
 
   # _ \\ %{}) do #%{"id" => id}) do #%{"id" => id}) do
   def edit(conn, %{"id" => id}) do
-    IO.puts("EDIT CLASS ID")
-    # IO.inspect(id)
     current_user = Map.get(conn.assigns, :current_user)
     # get user id - links to user table
     userid = current_user.id
@@ -105,8 +89,6 @@ defmodule AuctionWeb.ClassController do
     userid = current_user.id
     student = Auction.get_student(userid)
     student_id = student.data.id
-    IO.puts("inspect student id")
-    IO.inspect(student_id)
     firstname = student.data.firstname
     lastname = Auction.get_student_profile(userid)
     lastname = lastname.data.lastname

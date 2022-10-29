@@ -1,24 +1,22 @@
 <%= form_for @profile, @action, fn f -> %>
 
-<%# IO.inspect(@profile.action) %>
-
 
   <%= label f,      :title %>
   <%= error_tag f,  :title %>
   <%= text_input f, :title %>
-  
+
   <%= label f,      :lastname %>
   <%= error_tag f,  :lastname %>
   <%= text_input f, :lastname %>
-  
+
   <%= label f,      :firstname %>
   <%= error_tag f,  :firstname  %>
   <%= text_input f, :firstname  %>
-  
+
   <%= label f,      :spousename  %>
   <%= error_tag f,  :spousename %>
   <%= text_input f, :spousename %>
-  
+
   <%= label f,      :city %>
   <%= error_tag f,  :city %>
   <%= text_input f, :city %>
@@ -36,7 +34,7 @@
   <%= text_input f, :phoneone %>
 
   <%= label f,          :phonetwo %>
-  <%= error_tag f,      :phonetwo %> 
+  <%= error_tag f,      :phonetwo %>
   <%= password_input f, :phonetwo %>
 
   <div>

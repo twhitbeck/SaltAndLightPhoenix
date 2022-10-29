@@ -2,10 +2,8 @@
 <%# assigns ClassTitle.description - plus classes - a list of class info (map) %>
 <!--Available assigns: [:classes, :conn, :current_user, :id, :title] -->
 <html>
-<head>
-<%= csrf_meta_tag() %>
-</head>
 <body>
+<head>
 <p id="output"></p>
 <style>
 .table-layout {
@@ -37,6 +35,9 @@
 
 
 </style>
+
+<html>
+<body>
 
 <input type = "button" onclick = "cancelFunction()" id = "junk" value = "Cancel">
 
@@ -112,6 +113,58 @@ function highlight_row() {
 }
 </script>
 
+<script>
+
+  // Thanks to Tim
+  // Add a handler for the form's "submit" event
+  let junk =  document.getElementByID("reg_form");
+  console.log(junk);
+  alert(junk);
+S
+  document.getElementById("reg_form").addEventListener("submit", (event) => {
+    // The default behavior of form submission is to navigate, but since we're taking care of everything client-side let's prevent that
+    event.preventDefault();
+    const formElement = event.target;
+    fetch("/api/registration", {  //parens fetch
+      method: "POST",
+
+      headers: {
+        "content-type": "application/json",
+      },
+<%= IO.puts("HELLO")%>
+      body: JSON.stringify({  //parens pody
+        registration: {
+          student_id: formElement.elements["studentbox"].value,
+          class_id:   formElement.elements["classbox"].value,
+          semester:   formElement.elements["semesterbox"].value,
+        }
+      }) //end parens body
+alert("JSON");
+
+    }).then((response) => {   //end addEventListener
+      if (!response.ok) {
+        throw new Error(`Bad request: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+      
+    }).then((responsePayload) => {
+      alert("Successfully created registration");
+
+      // Note the person object is nested under the `data` property
+      console.log(responsePayload.data);
+
+      // TODO: Now what? Should we navigate the user away from the form?
+      // Should we reset the form and let them continue to create another user?
+
+      formElement.reset();
+    }).catch((error) => {
+      alert("ERROR creating registration");
+
+      console.log(error);
+    });
+  });
+</script>
+
 
 
 <form    name="regform" id = reg_form  action="" METHOD="POST">
@@ -129,7 +182,62 @@ function disableFunction() {
   }
 </script>
 
+<script>
 
+  // Thanks to Tim
+  // Add a handler for the form's "submit" event
+  let junk =  document.getElementByID("reg_form");
+  console.log(junk);
+  alert(junk);
+
+  document.getElementById("reg_form").addEventListener("submit", (event) => {
+    // The default behavior of form submission is to navigate, but since we're taking care of everything client-side let's prevent that
+    // event.preventDefault() basically cancels the default action
+    event.preventDefault();
+
+    // construct the event to  use
+    const formElement = event.target;
+
+    fetch("/api/registration", {  //parens fetch
+      method: "POST",
+
+      headers: {
+        "content-type": "application/json",
+      },
+
+      body: JSON.stringify(
+          {registration: {
+            student_id: formElement.elements["studentbox"].value,
+            class_id:   formElement.elements["classbox"].value,
+            semester:   formElement.elements["semesterbox"].value,
+          }
+        } //end registration
+      ) //end parens body
+
+    }).then((response) => {   //end addEventListener - (1) bad request throw an error - see below
+      if (!response.ok) {
+        throw new Error(`Bad request: ${response.status} ${response.statusText}`);
+      }
+
+      return response.json();
+
+    }).then((responsePayload) => { //end addEventListener - (2) request error OK, response OK
+      alert("Successfully created registration");
+
+      console.log(responsePayload.data);
+
+      // TODO: Now what? Should we navigate the user away from the form?
+
+      formElement.reset();
+    }).catch((error) => { //                  catch the thrown error - display an alert message and log the error
+      alert("ERROR creating registration");
+
+      console.log(error);
+    });
+  });
+</script>
+
+</body>
 
 <script>
     //check that all 3 hidden inputs are valid
@@ -148,60 +256,6 @@ function disableFunction() {
     document.getElementById("submitbtn").removeAttribute("disabled");
   }
 </script>
-
-<script>
-
-  // Thanks to Tim
-  // Add a handler for the form's "submit" event
-
-  document.getElementById("reg_form").addEventListener("submit", (event) => {
-    // The default behavior of form submission is to navigate, but since we're taking care of everything client-side let's prevent that
-    event.preventDefault();
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    var responseClone;
-    const formElement = event.target;
-    let student = formElement.elements["studentbox"].value;
-    let url = "http://localhost:4000/students/"+ student +"/registrations";
-    alert(student);
-    fetch(url, {  //start fetch
-    credentials: 'same-origin',
-      method: "POST",
-
-      headers: { //start headers
-        "content-type": "application/json",
-      },  // end headers
-
-      body: JSON.stringify({  //start stringify
-        registration: { //start registration
-          student_id: formElement.elements["studentbox"].value,
-          class_id:   formElement.elements["classbox"].value,
-          semester:   formElement.elements["semesterbox"].value,
-        }  // end registration
-      })  //end stringify
-
-
-    }).then((response) => {   //start promise #1
-      responseClone = response.clone();
-      (responseClone.text());
-      if (!response.ok) {  //start if - if not OK throw a new error
-        throw new Error(`Bad request: ${response.status} ${response.statusText}`);
-      }  //end if
-      return response.text();
-
-    }).then((responsePayload) => {  //start promise #2 - responsePayload contains data
-      alert("Successfully created registration");
-      console.log(responsePayload.data);
-       window.location.replace(localStorage.getItem("regIndex"));
-      formElement.reset();
-
-    }).catch((error) => { //start catch
-      alert("ERROR creating registration");
-      console.log(error);
-     // SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
-    }); //end catch
-
-  });
-</script>
-
 </body>
 </html>
+

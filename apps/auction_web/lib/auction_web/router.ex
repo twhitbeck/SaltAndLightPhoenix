@@ -1,27 +1,31 @@
 defmodule AuctionWeb.Router do
   use AuctionWeb, :router
   import Phoenix.LiveView.Router
-  ##################################################################
-  # (1) Find the matching route
-  # (2) Dispatch the matching function
+
+  ############################################################################
+  # See https://www.youtube.com/watch?v=DHwUmDrWNys&ab_channel=AlchemistCamp #
+  # (1) Find the matching route                                              #
+  # (2) Dispatch the matching function                                       #
+  # NOTE: The router pipelines the conn structure in to the controller       #
+  ############################################################################
+
   @options [:show, :new, :create, :edit, :update, :delete, :index]
-  @roptions [:show, :new, :create, :delete, :index]
-  @coptions [:show, :new, :create, :delete, :index]
+  @roptions [:show, :new, :create, :index, :delete]
 
   # pass conn thru from first defined to last defined
   pipeline :browser do
     plug(:accepts, ["html", "json"])
     plug(:fetch_session)
-    plug(:fetch_live_flash)
     plug(:fetch_flash)
+    plug(:fetch_live_flash)
     plug(:put_root_layout, {AuctionWeb.LayoutView, :root})
-    plug(:protect_from_forgery)
+    # plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(AuctionWeb.Authenticator)
   end
 
   pipeline :api do
-    plug(:accepts, ["json"])
+    plug(:accepts, ["json", "html"])
   end
 
   scope "/", AuctionWeb do
@@ -45,15 +49,15 @@ defmodule AuctionWeb.Router do
     # get("/new_registration", RegistrationController, :new)
     resources("/users", UserController, only: [:show, :new, :create])
     resources("/profiles", ProfileController, singleton: true)
-    # resources("/registrations", RegistrationController, only: @roptions)
+    # resources("/registrations", RegistrationController, only: [:delete])
 
-    resources "/classes", ClassController, only: @roptions do
-      forward("/profile", Plugs.ProfileRedirector)
+    resources("/classes", ClassController, only: @roptions)
+    # forward("/profile", Plugs.ProfileRedirector)
 
-      # resources "/students", StudentController, only: [:index, :new, :create] do
-      #   resources("/registrations", RegistrationController, only: [:index, :create, :new])
-      # end
-    end
+    # resources "/students", StudentController, only: [:index, :new, :create] do
+    #  resources("/registrations", RegistrationController, only: [:delete])
+    # end
+    # end
 
     #  student_class_path and student_registration_path nested resources
     resources "/students", StudentController, only: @options do
@@ -74,11 +78,10 @@ defmodule AuctionWeb.Router do
     # live_dashboard "/dashboard", metrics: AuctionWeb.Telemetry
   end
 
-  scope "/api", AuctionWeb do
-    pipe_through(:api)
-
-    resources("/registration", RegistrationController, only: [:show])
-  end
+  # scope "/api", AuctionWeb do
+  #  pipe_through(:api)
+  #  resources("/registrations", RegistrationController, only: [:delete])
+  # end
 
   # Enables the Swoosh mailbox preview in development.
   #
@@ -88,7 +91,7 @@ defmodule AuctionWeb.Router do
     scope "/dev" do
       pipe_through(:browser)
 
-      forward("/mailbox", Plug.Swoosh.MailboxPreview)
+      # forward("/mailbox", Plug.Swoosh.MailboxPreview)
     end
   end
 end

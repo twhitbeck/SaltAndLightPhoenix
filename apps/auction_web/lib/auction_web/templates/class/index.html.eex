@@ -36,8 +36,6 @@ IO.puts("SHOWING ASSIGNS WHEN NEED TO KNOW THIS")
 
 <span id = "spanresult"></span>
 
-<%= IO.puts("inspect titleid") %>
-<%= IO.inspect(@titleid) %>
 </ul>
 
  <style>

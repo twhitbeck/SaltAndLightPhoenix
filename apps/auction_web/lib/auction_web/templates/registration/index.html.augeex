@@ -7,8 +7,6 @@
 
 <input type="button" onclick="window.open('http://localhost:4000/classes/13/','_blank','resizable=yes')" />
 
-<% IO.puts("STUDENT ID") %>
-<% IO.inspect(@student_id) %>
 <% # make a drop down list of titles %>
 <% # purpose is to display all classes for a title %>
 

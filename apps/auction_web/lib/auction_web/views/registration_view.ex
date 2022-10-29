@@ -15,6 +15,7 @@ defmodule AuctionWeb.RegistrationView do
   end
 
   def render("show.json", %{registration: registration}) do
+    IO.puts("RegistrationView SHOW render one")
     %{data: render_one(registration, RegistrationView, "registration.json")}
   end
 
