@@ -8,12 +8,12 @@
 <%= csrf_meta_tag() %>
 </head>
 
+<%=# IO.inspect(@titlelist) %>
 <script>
 function getCurrentURL () {
   localStorage.setItem("regIndex",window.location.href );
 }
 </script
-
 <% # make a drop down list of titles %>
 <% # purpose is to display all classes for a title %>
 
@@ -26,12 +26,13 @@ function getCurrentURL () {
     <option value="<%= classtitle.id %>"><%= classtitle.description %></option>
   <% end %>
   </select>
-
+  <!-- Create drop down list of available classes -->
   <script>
-    let studentidAssigns = <%=@student_id %> //trick to get an assigns into a javascript variable
-    localStorage.setItem("studentID", studentidAssigns);
+     // window.location.href is the URL for the current page
+    let studentidAssigns = <%=@student_id %>              // trick to get an assigns into a javascript variable
+    //localStorage.setItem("studentID", studentidAssigns);  // make :student_id from assigns availble to other jscript functions
+
     const classtitlesSelect = document.getElementById("classtitles-select");
-    getCurrentURL();
     classtitlesSelect.addEventListener("change", (event) => {
       window.location.href = "/classes/" + event.target.value;
     })
@@ -96,10 +97,11 @@ th, td {
 
 <script>
   var hideDelete = function(){
+     let url = "http://localhost:4000/api/registrations/16";
+      alert("hideDelete");
         document.getElementById("deletebtn").style.visibility = 'hidden';
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        alert(token);
-        fetch('/api/registrations/89', {
+        fetch('http://localhost:4000/api/registrations/16', {
           method: 'delete',
           headers: {
          'Content-Type': 'application/json',
@@ -138,9 +140,14 @@ function highlight_row() {
             var rowSelected = table.getElementsByTagName('tr')[rowId];
             rowSelected.style.backgroundColor = "yellow";
             rowSelected.className += " selected";
-            let classID = rowSelected.cells[0].innerHTML;
+            // studentID , classID, semester - identify a unique registration
+            let studentID  = localStorage.getItem("studentID");
+            let classID    = rowSelected.cells[0].innerHTML;
+            let semester   = rowSelected.cells[4].innerHTML;
+            localStorage.setItem("classID", classID);
+            localStorage.setItem("semester", semester);
+                      // let url = "http://localhost:4000/students/"+ studentID +"/registrations/";
             const temp = classID.trim().split(/\s+/);
-            console.log(temp[1])
             let text = temp[1].toString();
             document.getElementById("cancelbtn").style.visibility = 'visible';
             document.getElementById("deletebtn").style.visibility = 'visible';

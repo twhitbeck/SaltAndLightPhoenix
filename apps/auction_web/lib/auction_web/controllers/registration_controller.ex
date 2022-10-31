@@ -139,6 +139,7 @@ defmodule AuctionWeb.RegistrationController do
     # One list of lists              #
     ##################################
     classes = Enum.map(regs, fn x -> Auction.list_class_data(x.class_id, x.semester) end)
+
     classtitle = params["classtitle"]
 
     classtitlelist = Auction.get_classtitles()

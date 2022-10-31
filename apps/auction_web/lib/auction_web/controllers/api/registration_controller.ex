@@ -44,10 +44,10 @@ defmodule AuctionWeb.Api.RegistrationController do
   # Map.get to get our given key in the template assigns.              #
   ######################################################################
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"registration" => registration}) do
     IO.puts("REG DELETE")
     # id is the registration id
-    Auction.delete_registration(id)
+    # Auction.delete_registration(id)
 
     conn
     |> put_flash(:info, "Class registration deleted successfully.")

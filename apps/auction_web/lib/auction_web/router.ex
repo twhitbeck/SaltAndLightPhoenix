@@ -10,7 +10,7 @@ defmodule AuctionWeb.Router do
   ############################################################################
 
   @options [:show, :new, :create, :edit, :update, :delete, :index]
-  @roptions [:show, :new, :create, :index, :delete]
+  @roptions [:show, :new, :create, :index]
 
   # pass conn thru from first defined to last defined
   pipeline :browser do
@@ -29,6 +29,7 @@ defmodule AuctionWeb.Router do
   end
 
   scope "/", AuctionWeb do
+    live("/thermostat", ThermostatLive)
     get("/profiles", ProfileController, :show)
     pipe_through(:browser)
     #########################################
@@ -62,6 +63,7 @@ defmodule AuctionWeb.Router do
     #  student_class_path and student_registration_path nested resources
     resources "/students", StudentController, only: @options do
       resources("/registrations", RegistrationController, only: @roptions)
+      delete("/registrations", RegistrationController, :delete)
     end
 
     # student_class_path
@@ -79,8 +81,8 @@ defmodule AuctionWeb.Router do
   end
 
   # scope "/api", AuctionWeb do
-  #  pipe_through(:api)
-  #  resources("/registrations", RegistrationController, only: [:delete])
+  #   pipe_through(:api)
+  #  delete("/registrations", RegistrationController, :delete)
   # end
 
   # Enables the Swoosh mailbox preview in development.

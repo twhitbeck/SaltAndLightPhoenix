@@ -497,10 +497,14 @@ end
 
   # for x <- list, do: x.description
   def get_classtitles() do
+    #newlist = []
     query = from(Classtitle, order_by: [:description], select: [:id, :description])
-    # query = from(Classtitle, select: [:description])
     Repo.all(query)
-    # for x <- list, do: to_string(x.id) <> " " <> x.description
+    # query = from(Classtitle, select: [:description])
+    #alist = Repo.all(query)
+    #for x <- alist do
+    #  newlist ++  [Integer.to_string(x.id), x.description]
+    #end
   end
 
   def list_class_data(classid, semester) do
